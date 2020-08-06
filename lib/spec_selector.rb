@@ -43,6 +43,7 @@ class SpecSelector
   end
 
   def example_pending(notification)
+    system("clear")
     @pending << notification.example.description
     @pending_count += 1
     status_count
@@ -56,7 +57,7 @@ class SpecSelector
   end
 
   def dump_failures(notification)
-    return if notification.failure_notifications.empty?
+    return if notification.failed_examples.empty?
     @failure_summaries << notification.fully_formatted_failed_examples
   end
 
