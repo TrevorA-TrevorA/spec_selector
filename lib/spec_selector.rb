@@ -164,9 +164,9 @@ class SpecSelector
     if !group.metadata[:parent_example_group]
       top_level(group)
     else
-      parent_description = group.metadata[:parent_example_group][:description]
-      @map[parent_description] ||= []
-      @map[parent_description] << group
+      parent = group.metadata[:parent_example_group]
+      @map[parent] ||= []
+      @map[parent] << group
     end
   end
 
@@ -177,8 +177,8 @@ class SpecSelector
 
   def fetch_examples(group)
     examples = group.examples
-    if @map[group.description]
-      @map[group.description].each { |g| examples += g.examples }
+    if @map[group.metadata]
+      @map[group.metadata].each { |g| examples += g.examples }
     end
     examples
   end
@@ -207,6 +207,7 @@ class SpecSelector
       
       case input
       when /t/i
+        next if @failed.empty?
         @selected = @failed.first
         display_example
       when /q/i
@@ -231,11 +232,11 @@ class SpecSelector
 
         if @selected.class == RSpec::Core::Example
           group = @selected.example_group.metadata[:parent_example_group]
-          parent_key = group ? group[:description] : :top_level
+          parent_key = group || :top_level
           parent_list = @map[parent_key] if parent_key
         else
           group = @selected.metadata[:parent_example_group][:parent_example_group]
-          parent_key = group ? group[:description] : :top_level
+          parent_key = group || :top_level
           parent_list = @map[parent_key]
         end
 
@@ -250,7 +251,7 @@ class SpecSelector
           return
         end
 
-        list = @map[@selected.description]
+        list = @map[@selected.metadata]
         selector(list)
       end
     end
@@ -319,6 +320,8 @@ class SpecSelector
     when "\e[B" 
       index = (index + 1) % result_list.length
       @selected = result_list[index]
+      display_example
+    else
       display_example
     end
   end
