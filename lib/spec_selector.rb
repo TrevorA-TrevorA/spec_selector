@@ -27,6 +27,8 @@ class SpecSelector
     @selected = nil
     @summary_notification = nil
     @summary = []
+    @exclude_passing = false
+    @active_map = @map
   end
 
   def message(notification)
@@ -76,6 +78,11 @@ class SpecSelector
   private
 
   def display_list(list)
+      verb = @exclude_passing ? "include" : "exclude"
+      puts "Press F to #{verb} passing examples"
+      puts "Press T to view top failed example"
+      puts "\n"
+
       list.each do |item|
         description = lineage(item.metadata)
            
@@ -194,7 +201,8 @@ class SpecSelector
     @selected = list[index]
     status_count
     print_summary
-    display_list(list)
+
+    display_list(list) 
 
     run_selector = true
 
@@ -206,6 +214,9 @@ class SpecSelector
       end
       
       case input
+      when /f/i
+        @exclude_passing ? include_passing! : exclude_passing!
+        selector(@active_map[:top_level])
       when /t/i
         next if @failed.empty?
         @selected = @failed.first
@@ -228,21 +239,21 @@ class SpecSelector
         print_summary
         display_list(list)
       when "\x7F"
-        next if list == @map[:top_level]
+        next if list == @active_map[:top_level]
 
         if @selected.class == RSpec::Core::Example
           group = @selected.example_group.metadata[:parent_example_group]
           parent_key = group || :top_level
-          parent_list = @map[parent_key] if parent_key
+          parent_list = @active_map[parent_key] if parent_key
         else
           group = @selected.metadata[:parent_example_group][:parent_example_group]
           parent_key = group || :top_level
-          parent_list = @map[parent_key]
+          parent_list = @active_map[parent_key]
         end
 
         selector(parent_list) if parent_list
       when "\e"
-        selector(@map[:top_level])
+        selector(@active_map[:top_level])
       when "\r"
         run_selector = false
 
@@ -251,7 +262,7 @@ class SpecSelector
           return
         end
 
-        list = @map[@selected.metadata]
+        list = @active_map[@selected.metadata]
         selector(list)
       end
     end
@@ -337,5 +348,17 @@ class SpecSelector
     return data[:example_group] if data.keys.include?(:example_group)
     return data[:parent_example_group] if data.keys.include?(:parent_example_group)
     nil
+  end
+
+  def exclude_passing!
+    list = @map.reject { |k,v| v.all?{ |g| all_passed?(fetch_examples(g))}}
+    list.transform_values! { |v| v.reject{ |g| all_passed?(fetch_examples(g))}}
+    @active_map = list
+    @exclude_passing = true
+  end
+
+  def include_passing!
+    @active_map = @map
+    @exclude_passing = false
   end
 end
