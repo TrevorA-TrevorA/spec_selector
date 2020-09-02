@@ -175,6 +175,11 @@ class SpecSelector
       @map[parent] ||= []
       @map[parent] << group
     end
+
+    unless group.examples.empty?
+      @map[group.metadata] ||= []
+      @map[group.metadata] += group.examples
+    end
   end
 
   def top_level(group)
@@ -182,11 +187,16 @@ class SpecSelector
     @map[:top_level] << group
   end
 
-  def fetch_examples(group)
-    examples = group.examples
-    if @map[group.metadata]
-      @map[group.metadata].each { |g| examples += g.examples }
+  def fetch_examples(item)
+    return [item] if item.is_a?(RSpec::Core::Example)
+    examples = item.examples
+
+    return examples if @map[item.metadata] == examples
+
+    @map[item.metadata].each do |d| 
+      examples += d.examples unless d.is_a?(RSpec::Core::Example)
     end
+    
     examples
   end
 
@@ -196,14 +206,13 @@ class SpecSelector
 
   def selector(list)
     system("clear")
-    list ||= @selected.examples
+    list ||= @active_map[:top_level]
     index = 0
     @selected = list[index]
     status_count
     print_summary
 
     display_list(list) 
-
     run_selector = true
 
     until run_selector == false
@@ -216,7 +225,9 @@ class SpecSelector
       case input
       when /f/i
         @exclude_passing ? include_passing! : exclude_passing!
-        selector(@active_map[:top_level])
+        new_list = @active_map[parent_data(@selected.metadata)] 
+        new_list ||= @active_map[:top_level]
+        selector(new_list)
       when /t/i
         next if @failed.empty?
         @selected = @failed.first
