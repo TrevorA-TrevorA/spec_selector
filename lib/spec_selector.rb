@@ -14,7 +14,7 @@ class SpecSelector
 
   def initialize(output)
     @output = output
-    @groups = []
+    @groups = {}
     @map = {}
     @failed = []
     @passed = []
@@ -29,6 +29,8 @@ class SpecSelector
     @summary = []
     @exclude_passing = false
     @active_map = @map
+    @all_passing = false
+    @selector_index = 0
   end
 
   def message(notification)
@@ -38,7 +40,7 @@ class SpecSelector
   def example_group_started(notification)
     group = notification.group
     map(group)
-    @groups << group
+    @groups[group.metadata] = group
   end
 
   def example_passed(notification)
@@ -67,47 +69,19 @@ class SpecSelector
   def dump_summary(notification)
     system("clear")
     @summary_notification = notification
-    status_count
     status_summary(notification)
-    print_summary
+    test_data_summary
+    @all_passing = true if @pending_count + @fail_count == 0
     display_list(@map[:top_level])
-    sleep(1) 
     selector(@map[:top_level])
   end
 
   private
 
   def display_list(list)
-      verb = @exclude_passing ? "include" : "exclude"
-      puts "Press F to #{verb} passing examples"
-      puts "Press T to view top failed example"
-      puts "\n"
-
-      list.each do |item|
-        description = lineage(item.metadata)
-           
-        if item.is_a?(RSpec::Core::Example)
-          status = item.execution_result.status
-          
-          if @selected == item
-            highlight(description)
-          else
-            color(description, :green) if status == :passed
-            color(description, :yellow) if status == :pending
-            color(description, :red) if status == :failed
-          end
-        else   
-          examples = fetch_examples(item)
-
-          if @selected == item
-            highlight(description)
-          else
-            color(description, :green) if all_passed?(examples)
-            color(description, :yellow) if any_pending?(examples)
-            color(description, :red) if any_failed?(examples)
-          end
-        end
-    end
+    full_instructions(list)
+    empty_line
+    list.each { |item| format_list_item(item) }
   end
 
   def all_passed?(examples)
@@ -149,7 +123,7 @@ class SpecSelector
     pass_count
     pending_count if @pending_count > 0
     fail_count
-    @output.puts "\n"
+    empty_line
   end
 
   def status_summary(notification)
@@ -160,26 +134,20 @@ class SpecSelector
 
   def print_summary
     @summary.each { |sum| italicize(sum) }
-    @output.puts "\n"
+    empty_line
   end
 
   def italicize(string)
     @output.puts "\e[3m" + string + "\e[0m"
   end
 
-  def map(group)
-    if !group.metadata[:parent_example_group]
-      top_level(group)
-    else
-      parent = group.metadata[:parent_example_group]
-      @map[parent] ||= []
-      @map[parent] << group
-    end
+  def bold(string)
+    @output.puts "\e[1m" + string + "\e[0m"
+  end
 
-    unless group.examples.empty?
-      @map[group.metadata] ||= []
-      @map[group.metadata] += group.examples
-    end
+  def map(group)
+    map_group(group)
+    map_examples(group) unless group.examples.empty?
   end
 
   def top_level(group)
@@ -188,13 +156,13 @@ class SpecSelector
   end
 
   def fetch_examples(item)
-    return [item] if item.is_a?(RSpec::Core::Example)
+    return [item] if example?(item)
     examples = item.examples
 
     return examples if @map[item.metadata] == examples
 
     @map[item.metadata].each do |d| 
-      examples += d.examples unless d.is_a?(RSpec::Core::Example)
+      examples += d.examples unless example?(d)
     end
     
     examples
@@ -207,145 +175,26 @@ class SpecSelector
   def selector(list)
     system("clear")
     list ||= @active_map[:top_level]
-    index = 0
-    @selected = list[index]
-    status_count
-    print_summary
-
+    @selected ||= list.first
+    test_data_summary
     display_list(list) 
-    run_selector = true
-
-    until run_selector == false
-      input = $stdin.getch
-
-      if input == "\e"
-        input << $stdin.read_nonblock(2) rescue input
-      end
-      
-      case input
-      when /f/i
-        @exclude_passing ? include_passing! : exclude_passing!
-        new_list = @active_map[parent_data(@selected.metadata)] 
-        new_list ||= @active_map[:top_level]
-        selector(new_list)
-      when /t/i
-        next if @failed.empty?
-        @selected = @failed.first
-        display_example
-      when /q/i
-        system("clear")
-        exit
-      when "\e[A"
-        index -= 1 unless index == 0
-        @selected = list[index]
-        system("clear")
-        status_count
-        print_summary
-        display_list(list)
-      when "\e[B"
-        index += 1 unless index == list.length - 1
-        @selected = list[index]
-        system("clear")
-        status_count
-        print_summary
-        display_list(list)
-      when "\x7F"
-        next if list == @active_map[:top_level]
-
-        if @selected.class == RSpec::Core::Example
-          group = @selected.example_group.metadata[:parent_example_group]
-          parent_key = group || :top_level
-          parent_list = @active_map[parent_key] if parent_key
-        else
-          group = @selected.metadata[:parent_example_group][:parent_example_group]
-          parent_key = group || :top_level
-          parent_list = @active_map[parent_key]
-        end
-
-        selector(parent_list) if parent_list
-      when "\e"
-        selector(@active_map[:top_level])
-      when "\r"
-        run_selector = false
-
-        if @selected.is_a?(RSpec::Core::Example)
-          display_example
-          return
-        end
-
-        list = @active_map[@selected.metadata]
-        selector(list)
-      end
-    end
+    read_input(list)
   end
 
   def display_example
     system("clear")
-    status_count
-    print_summary
+    test_data_summary
     status = @selected.execution_result.status
-
-    puts "Press BACKSPACE to return to list"
-    puts "Press Q to quit"
-    puts "Press ESC to return to top-level group list"
-    puts "Press UP or DOWN to view other #{status} examples"
-    puts "\n"
-
-    case status
-    when :failed
-      result_list = @failed
-      data = @failure_summaries[@selected]
-    when :pending
-      result_list = @pending
-      data = @pending_summaries[@selected]
-    when :passed
-      result_list = @passed
-    end
+    result_list, data = example_list(status)
+    view_other_examples(status) if result_list.count > 1
     
-    ex_group = @selected.example_group.examples
-
-    index = result_list.index(@selected)
-    enumeration = index + 1
-    col = $stdout.winsize[1]
+    back_instructions
+    q_to_exit
+    empty_line
     
-    if status == :failed || status == :pending
-      data = data.fully_formatted(enumeration).split("\n")
-      data[0] = ""
-      data.insert(1,"-"*col)
-      data.insert(3,"-"*col)
-      @output.puts data
-    else
-      @output.puts "-"*col
-      @output.puts "#{enumeration}) " + @selected.description
-      @output.puts "-"*col
-      color("PASSED", :green)
-    end
-
-    input = $stdin.getch
-
-    if input == "\e"
-      input << $stdin.read_nonblock(2) rescue input
-    end
-
-    case input
-    when "\x7F"
-      selector(ex_group)
-    when /q/i
-      system("clear")
-      exit
-    when "\e"
-      selector(@map[:top_level])
-    when "\e[A"
-      index -= 1
-      @selected = result_list[index]
-      display_example
-    when "\e[B" 
-      index = (index + 1) % result_list.length
-      @selected = result_list[index]
-      display_example
-    else
-      display_example
-    end
+    
+    format_example(status, result_list, data)
+    example_options(result_list)
   end
 
   def lineage(data)
@@ -371,5 +220,238 @@ class SpecSelector
   def include_passing!
     @active_map = @map
     @exclude_passing = false
+  end
+
+  def back_instructions
+    @output.puts "Press BACKSPACE to return to parent group list"
+    @output.puts "Press ESCAPE to return to top-level group list"
+  end
+
+  def full_instructions(list)
+    @all_passing ? bold("ALL EXAMPLES PASSED\n") : filter_pass_instructions
+    select_instructions(list)
+    back_instructions unless list == @active_map[:top_level]
+    q_to_exit 
+  end
+
+  def filter_pass_instructions  
+    verb = @exclude_passing ? "include" : "exclude"
+    @output.puts "Press F to #{verb} passing examples"
+  end
+
+  def select_instructions(list)
+    @output.puts "Press T to view top failed example" unless @failed.empty?
+    @output.puts "Press UP/DOWN to navigate list" if list.count > 1
+    @output.puts "Press ENTER to select"
+  end
+
+  def q_to_exit
+    @output.puts "Press Q to exit"
+  end
+
+  def empty_line
+    @output.puts "\n"
+  end
+
+  def view_other_examples(status)
+    verb = (status == :passed ? "passing" : status.to_s)
+    @output.puts "Press UP/DOWN to view other #{verb} examples"
+  end
+
+  def format_example(status, result_list, data)
+    index = result_list.index(@selected)
+    enumeration = index + 1
+    col = $stdout.winsize[1]
+    
+    if status == :failed || status == :pending
+      data = data.fully_formatted(enumeration).split("\n")
+      data[0] = ""
+      data.insert(1,"-"*col)
+      data.insert(3,"-"*col)
+      @output.puts data
+    else
+      @output.puts "-"*col
+      @output.puts "#{enumeration}) " + @selected.description
+      @output.puts "-"*col
+      color("PASSED", :green)
+    end
+  end
+
+  def example_list(status)
+    case status
+    when :failed
+      result_list = @failed
+      data = @failure_summaries[@selected]
+    when :pending
+      result_list = @pending
+      data = @pending_summaries[@selected]
+    when :passed
+      result_list = @passed
+    end
+    [result_list, data]
+  end
+
+  def example_options(result_list)
+    index = result_list.index(@selected)
+    ex_group = @active_map[@selected.example_group.metadata]
+
+    input = user_input
+
+    case input
+    when /t/i
+      @failed.empty? ? display_example : top_fail
+    when "\x7F"
+      selector(ex_group)
+    when /q/i
+      quit
+    when "\e"
+      @selected = nil
+      selector(@active_map[:top_level])
+    when "\e[A"
+      index -= 1
+      @selected = result_list[index]
+      display_example
+    when "\e[B" 
+      index = (index + 1) % result_list.length
+      @selected = result_list[index]
+      display_example
+    else
+      display_example
+    end
+  end
+
+  def user_input
+    input = $stdin.getch
+
+    if input == "\e"
+      input << $stdin.read_nonblock(2) rescue input
+    end
+
+    input
+  end
+
+  def read_input(list)
+    @selector_index = list.index(@selected) || 0
+    reading_input = true
+
+    while reading_input
+      input = user_input
+
+      case input
+      when /f/i 
+        passing_filter
+      when /t/i
+        next if @failed.empty?
+        top_fail
+      when /q/i
+        quit
+      when "\e[A"
+        up(list)
+      when "\e[B"
+        down(list)
+      when "\x7F"
+        next if list == @active_map[:top_level]
+        back
+      when "\e"
+        @selected = nil
+        selector(@active_map[:top_level])
+      when "\r"
+        select_item
+      end
+    end
+  end
+
+  def format_list_item(item)
+    description = lineage(item.metadata)
+    data = example?(item) ? [item] : fetch_examples(item)
+
+    if @selected == item
+      highlight(description)
+    else
+      color(description, :green) if all_passed?(data)
+      color(description, :yellow) if any_pending?(data)
+      color(description, :red) if any_failed?(data)
+    end
+      
+  end
+
+  def example?(item)
+    item.is_a?(RSpec::Core::Example)
+  end
+
+  def status(example)
+    example.execution_result.status
+  end
+
+  def map_examples(group)
+    @map[group.metadata] ||= []
+    @map[group.metadata] += group.examples
+  end
+
+  def map_group(group)
+    if !group.metadata[:parent_example_group]
+      top_level(group)
+    else
+      parent = group.metadata[:parent_example_group]
+      @map[parent] ||= []
+      @map[parent] << group
+    end
+  end
+
+  def passing_filter
+    unless @all_passing
+        @exclude_passing ? include_passing! : exclude_passing!
+        new_list = @active_map[parent_data(@selected.metadata)] 
+        new_list ||= @active_map[:top_level]
+        @selected = nil
+        selector(new_list)
+    end
+  end
+
+  def quit
+    system("clear")
+    exit
+  end
+
+  def back
+    data = parent_data(@selected.metadata)
+    parent_key = parent_data(data) || :top_level
+    parent_list = @active_map[parent_key]
+    @selected = @groups[data]
+    selector(parent_list)
+  end
+
+  def test_data_summary
+    status_count
+    print_summary
+  end
+
+  def up(list)
+    @selector_index -= 1 unless @selector_index == 0
+    @selected = list[@selector_index]
+    system("clear")
+    test_data_summary
+    display_list(list)
+  end
+
+  def down(list)
+    @selector_index += 1 unless @selector_index == list.length - 1
+    @selected = list[@selector_index]
+    system("clear")
+    test_data_summary
+    display_list(list)
+  end
+
+  def select_item
+    display_example if example?(@selected)
+    list = @active_map[@selected.metadata]
+    @selected = nil
+    selector(list)
+  end
+
+  def top_fail
+    return if @failed.empty?
+    @selected = @failed.first
+    display_example
   end
 end
