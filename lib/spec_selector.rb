@@ -188,6 +188,7 @@ class SpecSelector
     result_list, data = example_list(status)
     view_other_examples(status) if result_list.count > 1
     
+    top_fail_text unless @failed.empty? || @selected == @failed.first
     back_instructions
     q_to_exit
     empty_line
@@ -240,7 +241,7 @@ class SpecSelector
   end
 
   def select_instructions(list)
-    @output.puts "Press T to view top failed example" unless @failed.empty?
+    top_fail_text unless @failed.empty?
     @output.puts "Press UP/DOWN to navigate list" if list.count > 1
     @output.puts "Press ENTER to select"
   end
@@ -453,5 +454,9 @@ class SpecSelector
     return if @failed.empty?
     @selected = @failed.first
     display_example
+  end
+
+  def top_fail_text
+    @output.puts "Press T to view top failed example"
   end
 end
