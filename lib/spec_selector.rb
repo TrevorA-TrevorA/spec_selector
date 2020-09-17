@@ -13,6 +13,8 @@ class SpecSelector
                                                    :dump_summary
 
   def initialize(output)
+    open_buffer
+    hide_cursor
     @output = output
     @groups = {}
     @map = {}
@@ -31,10 +33,11 @@ class SpecSelector
     @active_map = @map
     @all_passing = false
     @selector_index = 0
+    @messages = []
   end
 
   def message(notification)
-    @output.puts notification.message
+    @messages << notification.message
   end
 
   def example_group_started(notification)
@@ -44,14 +47,14 @@ class SpecSelector
   end
 
   def example_passed(notification)
-    system("clear")
+    clear_frame
     @passed << notification.example
     @pass_count += 1
     status_count
   end
 
   def example_pending(notification)
-    system("clear")
+    clear_frame
     @pending_summaries[notification.example] = notification
     @pending << notification.example
     @pending_count += 1
@@ -59,7 +62,7 @@ class SpecSelector
   end
 
   def example_failed(notification)
-    system("clear")
+    clear_frame
     @failure_summaries[notification.example] = notification
     @failed << notification.example
     @fail_count += 1
@@ -67,16 +70,44 @@ class SpecSelector
   end
 
   def dump_summary(notification)
-    system("clear")
+    print_messages unless @messages.empty?
+    external_err_count = notification.errors_outside_of_examples_count
+    errors_summary(notification) if external_err_count > 0
+    examples_summary(notification) unless @map.empty? 
+  end
+
+  private
+
+  def print_messages
+    @messages.each { |message| italicize message}
+    @output.puts "\n"
+  end
+
+  def errors_summary(notification)
+    errors = notification.errors_outside_of_examples_count
+    italicize "Finished in #{notification.duration} seconds"
+    italicize "Files loaded in #{notification.load_time}"
+    @output.puts "\n"
+    italicize "#{errors} errors occurred outside of examples"
+    italicize "Examples were not successfully executed"
+    @output.puts "\n"
+  end
+
+  def examples_summary(notification)
+    clear_frame
     @summary_notification = notification
     status_summary(notification)
     test_data_summary
-    @all_passing = true if @pending_count + @fail_count == 0
+    all_passing?
     display_list(@map[:top_level])
     selector(@map[:top_level])
   end
 
-  private
+  def all_passing?
+    if (@pending_count + @fail_count == 0) && @pass_count > 0
+      @all_passing = true
+    end
+  end
 
   def display_list(list)
     full_instructions(list)
@@ -173,7 +204,7 @@ class SpecSelector
   end
 
   def selector(list)
-    system("clear")
+    clear_frame
     list ||= @active_map[:top_level]
     @selected ||= list.first
     test_data_summary
@@ -182,7 +213,7 @@ class SpecSelector
   end
 
   def display_example
-    system("clear")
+    clear_frame
     test_data_summary
     status = @selected.execution_result.status
     result_list, data = example_list(status)
@@ -224,8 +255,8 @@ class SpecSelector
   end
 
   def back_instructions
-    @output.puts "Press BACKSPACE to return to parent group list"
-    @output.puts "Press ESCAPE to return to top-level group list"
+    @output.puts "Press [backspace] to return to parent group list"
+    @output.puts "Press [escape] to return to top-level group list"
   end
 
   def full_instructions(list)
@@ -242,8 +273,8 @@ class SpecSelector
 
   def select_instructions(list)
     top_fail_text unless @failed.empty?
-    @output.puts "Press UP/DOWN to navigate list" if list.count > 1
-    @output.puts "Press ENTER to select"
+    @output.puts "Press ↑ or ↓ to navigate list" if list.count > 1
+    @output.puts "Press [enter] to select"
   end
 
   def q_to_exit
@@ -256,7 +287,7 @@ class SpecSelector
 
   def view_other_examples(status)
     verb = (status == :passed ? "passing" : status.to_s)
-    @output.puts "Press UP/DOWN to view other #{verb} examples"
+    @output.puts "Press ↑ or ↓ to view other #{verb} examples"
   end
 
   def format_example(status, result_list, data)
@@ -401,16 +432,18 @@ class SpecSelector
 
   def passing_filter
     unless @all_passing
-        @exclude_passing ? include_passing! : exclude_passing!
-        new_list = @active_map[parent_data(@selected.metadata)] 
-        new_list ||= @active_map[:top_level]
-        @selected = nil
-        selector(new_list)
+      @exclude_passing ? include_passing! : exclude_passing!
+      new_list = @active_map[parent_data(@selected.metadata)] 
+      new_list ||= @active_map[:top_level]
+      @selected = nil
+      selector(new_list)
     end
   end
 
   def quit
-    system("clear")
+    clear_frame
+    close_buffer
+    reveal_cursor
     exit
   end
 
@@ -430,7 +463,7 @@ class SpecSelector
   def up(list)
     @selector_index -= 1 unless @selector_index == 0
     @selected = list[@selector_index]
-    system("clear")
+    clear_frame
     test_data_summary
     display_list(list)
   end
@@ -438,7 +471,7 @@ class SpecSelector
   def down(list)
     @selector_index += 1 unless @selector_index == list.length - 1
     @selected = list[@selector_index]
-    system("clear")
+    clear_frame
     test_data_summary
     display_list(list)
   end
@@ -458,5 +491,26 @@ class SpecSelector
 
   def top_fail_text
     @output.puts "Press T to view top failed example"
+  end
+
+  def clear_frame
+    system("printf '\e[H'")
+    system("printf '\e[0J'")
+  end
+
+  def open_buffer
+    system("tput smcup")
+  end
+
+  def close_buffer
+    system("tput rmcup")
+  end
+
+  def hide_cursor
+    system("printf '\e[?25l'")
+  end
+  
+  def reveal_cursor
+    system("printf '\e[?25h'")
   end
 end
