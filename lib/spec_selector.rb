@@ -81,6 +81,7 @@ class SpecSelector
   def print_messages
     @messages.each { |message| italicize message}
     empty_line
+    stand_alone_exit
   end
 
   def errors_summary(notification)
@@ -90,13 +91,7 @@ class SpecSelector
     empty_line
     italicize "#{errors} errors occurred outside of examples"
     italicize "Examples were not successfully executed"
-    empty_line
-    q_to_exit
-    reading_input = true
-    while reading_input
-      input = $stdin.getch
-      quit if input.match?(/q/i)
-    end
+    stand_alone_exit
   end
 
   def examples_summary(notification)
@@ -112,6 +107,15 @@ class SpecSelector
   def all_passing?
     if (@pending_count + @fail_count == 0) && @pass_count > 0
       @all_passing = true
+    end
+  end
+
+  def stand_alone_exit
+    q_to_exit
+    reading_input = true
+    while reading_input
+      input = $stdin.getch
+      quit if input.match?(/q/i)
     end
   end
 
