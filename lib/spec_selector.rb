@@ -80,17 +80,23 @@ class SpecSelector
 
   def print_messages
     @messages.each { |message| italicize message}
-    @output.puts "\n"
+    empty_line
   end
 
   def errors_summary(notification)
     errors = notification.errors_outside_of_examples_count
     italicize "Finished in #{notification.duration} seconds"
     italicize "Files loaded in #{notification.load_time}"
-    @output.puts "\n"
+    empty_line
     italicize "#{errors} errors occurred outside of examples"
     italicize "Examples were not successfully executed"
-    @output.puts "\n"
+    empty_line
+    q_to_exit
+    reading_input = true
+    while reading_input
+      input = $stdin.getch
+      quit if input.match?(/q/i)
+    end
   end
 
   def examples_summary(notification)
