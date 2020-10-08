@@ -13,7 +13,6 @@ class SpecSelector
                                                    :dump_summary
 
   def initialize(output)
-    open_buffer
     hide_cursor
     @output = output
     @groups = {}
@@ -70,6 +69,7 @@ class SpecSelector
   end
 
   def dump_summary(notification)
+    clear_frame
     print_messages unless @messages.empty?
     external_err_count = notification.errors_outside_of_examples_count
     errors_summary(notification) if external_err_count > 0
@@ -452,7 +452,6 @@ class SpecSelector
 
   def quit
     clear_frame
-    close_buffer
     reveal_cursor
     exit
   end
@@ -505,15 +504,8 @@ class SpecSelector
 
   def clear_frame
     system("printf '\e[H'")
+    system("printf '\e[3J'")
     system("printf '\e[0J'")
-  end
-
-  def open_buffer
-    system("tput smcup")
-  end
-
-  def close_buffer
-    system("tput rmcup")
   end
 
   def hide_cursor
