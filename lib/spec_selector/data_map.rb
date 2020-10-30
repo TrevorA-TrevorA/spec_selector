@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DataMap
   def map(group)
     map_group(group)
@@ -10,8 +12,10 @@ module DataMap
   end
 
   def parent_data(data)
-    return data[:example_group] if data.keys.include?(:example_group)
-    return data[:parent_example_group] if data.keys.include?(:parent_example_group)
+    keys = data.keys
+    return data[:example_group] if keys.include?(:example_group)
+    return data[:parent_example_group] if keys.include?(:parent_example_group)
+
     nil
   end
 

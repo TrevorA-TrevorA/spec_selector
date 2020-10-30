@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rspec/core'
 require 'rspec/core/formatters/console_codes'
 require 'io/console'
@@ -22,11 +24,13 @@ class SpecSelector
   include Initialize
   include Instructions
 
-  RSpec::Core::Formatters.register self, :message, :example_group_started,
-                                                   :example_passed,
-                                                   :example_pending,
-                                                   :example_failed,
-                                                   :dump_summary
+  RSpec::Core::Formatters.register self,
+                                   :message,
+                                   :example_group_started,
+                                   :example_passed,
+                                   :example_pending,
+                                   :example_failed,
+                                   :dump_summary
 
   def initialize(output)
     @output = output
@@ -70,7 +74,7 @@ class SpecSelector
     clear_frame
     print_messages unless @messages.empty?
     external_err_count = notification.errors_outside_of_examples_count
-    errors_summary(notification) if external_err_count > 0
-    examples_summary(notification) unless @map.empty? 
+    errors_summary(notification) if external_err_count.positive?
+    examples_summary(notification) unless @map.empty?
   end
 end

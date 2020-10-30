@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Helpers
   def all_passing?
-    if (@pending_count + @fail_count == 0) && @pass_count > 0
+    if (@pending_count + @fail_count == 0) && @pass_count.positiive?
       @all_passing = true
     end
   end

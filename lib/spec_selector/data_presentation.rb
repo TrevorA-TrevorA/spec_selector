@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DataPresentation
   def test_data_summary
     status_count
@@ -5,7 +7,7 @@ module DataPresentation
   end
 
   def print_messages
-    @messages.each { |message| italicize message}
+    @messages.each { |message| italicize message }
     empty_line
     stand_alone_exit
   end
@@ -20,20 +22,19 @@ module DataPresentation
     selector(@map[:top_level])
   end
 
-
   def errors_summary(notification)
     errors = notification.errors_outside_of_examples_count
     italicize "Finished in #{notification.duration} seconds"
     italicize "Files loaded in #{notification.load_time}"
     empty_line
     italicize "#{errors} errors occurred outside of examples"
-    italicize "Examples were not successfully executed"
+    italicize 'Examples were not successfully executed'
     stand_alone_exit
   end
 
   def status_count
     pass_count
-    pending_count if @pending_count > 0
+    pending_count if @pending_count.positive?
     fail_count
     empty_line
   end
@@ -44,8 +45,8 @@ module DataPresentation
   end
 
   def exclude_passing!
-    list = @map.reject { |k,v| v.all?{ |g| all_passed?(fetch_examples(g))}}
-    list.transform_values! { |v| v.reject{ |g| all_passed?(fetch_examples(g))}}
+    list = @map.reject { |_, v| v.all? { |g| all_passed?(fetch_examples(g)) } }
+    list.transform_values! { |v| v.reject { |g| all_passed?(fetch_examples(g)) } }
     @active_map = list
     @exclude_passing = true
   end
@@ -56,13 +57,13 @@ module DataPresentation
   end
 
   def passing_filter
-    unless @all_passing
-      @exclude_passing ? include_passing! : exclude_passing!
-      new_list = @active_map[parent_data(@selected.metadata)] 
-      new_list ||= @active_map[:top_level]
-      @selected = nil
-      selector(new_list)
-    end
+    return if @all_passing
+
+    @exclude_passing ? include_passing! : exclude_passing!
+    new_list = @active_map[parent_data(@selected.metadata)]
+    new_list ||= @active_map[:top_level]
+    @selected = nil
+    selector(new_list)
   end
 
   def status_summary(notification)
@@ -73,6 +74,8 @@ module DataPresentation
   end
 
   def display_list(list)
+    clear_frame
+    test_data_summary
     full_instructions(list)
     empty_line
     list.each { |item| format_list_item(item) }
@@ -90,16 +93,13 @@ module DataPresentation
   end
 
   def example_list(status)
-    case status
-    when :failed
-      result_list = @failed
-      data = @failure_summaries[@selected]
-    when :pending
-      result_list = @pending
-      data = @pending_summaries[@selected]
-    when :passed
-      result_list = @passed
-    end
+    result_list = @failed if status == :failed
+    result_list = @pending if status == :pending
+    result_list = @passed if status == :passed
+
+    data = @failure_summaries[@selected] if status == :failed
+    data = @pending_summaries[@selected] if status == :pending
+
     [result_list, data]
   end
 end

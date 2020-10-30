@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module UI
   def stand_alone_exit
     q_to_exit
     reading_input = true
-    
+
     while reading_input
       input = $stdin.getch
       quit if input.match?(/q/i)
@@ -14,7 +16,7 @@ module UI
     list ||= @active_map[:top_level]
     @selected ||= list.first
     test_data_summary
-    display_list(list) 
+    display_list(list)
     navigate_list(list)
   end
 
@@ -26,7 +28,7 @@ module UI
       input = user_input
 
       case input
-      when /f/i 
+      when /f/i
         passing_filter
       when /t/i
         next if @failed.empty?
@@ -35,8 +37,10 @@ module UI
         quit
       when "\e[A"
         up(list)
+        display_list(list)
       when "\e[B"
         down(list)
+        display_list(list)
       when "\x7F"
         next if list == @active_map[:top_level]
         back
@@ -60,19 +64,13 @@ module UI
   end
 
   def up(list)
-    @selector_index -= 1 unless @selector_index == 0
+    @selector_index = (@selector_index - 1) % list.length
     @selected = list[@selector_index]
-    clear_frame
-    test_data_summary
-    display_list(list)
   end
 
   def down(list)
-    @selector_index += 1 unless @selector_index == list.length - 1
+    @selector_index = (@selector_index + 1) % list.length
     @selected = list[@selector_index]
-    clear_frame
-    test_data_summary
-    display_list(list)
   end
 
   def select_item
@@ -84,6 +82,7 @@ module UI
 
   def top_fail
     return if @failed.empty?
+
     @selected = @failed.first
     display_example
   end
@@ -97,7 +96,7 @@ module UI
   end
 
   def navigate_summaries(result_list)
-    index = result_list.index(@selected)
+    @selector_index = result_list.index(@selected)
     ex_group = @active_map[@selected.example_group.metadata]
 
     input = user_input
@@ -112,12 +111,10 @@ module UI
     when "\e"
       back_to_top_level
     when "\e[A"
-      index -= 1
-      @selected = result_list[index]
+      up(result_list)
       display_example
-    when "\e[B" 
-      index = (index + 1) % result_list.length
-      @selected = result_list[index]
+    when "\e[B"
+      down(result_list)
       display_example
     else
       display_example
@@ -126,9 +123,12 @@ module UI
 
   def user_input
     input = $stdin.getch
+    return input unless input == "\e"
 
-    if input == "\e"
-      input << $stdin.read_nonblock(2) rescue input
+    begin
+      input << $stdin.read_nonblock(2)
+    rescue IO::EAGAINWaitReadable
+      nil
     end
 
     input

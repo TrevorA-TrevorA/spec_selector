@@ -1,14 +1,17 @@
+# frozen_string_literal: true
+
 module Format
   def fetch_examples(item)
     return [item] if example?(item)
+
     examples = item.examples
 
     return examples if @map[item.metadata] == examples
 
-    @map[item.metadata].each do |d| 
+    @map[item.metadata].each do |d|
       examples += d.examples unless example?(d)
     end
-    
+
     examples
   end
 
@@ -57,25 +60,26 @@ module Format
     parent = parent_data(data)
 
     return data[:description] unless parent
-    lineage(parent) + " -> " + data[:description]
+
+    lineage(parent) + ' -> ' + data[:description]
   end
 
   def format_example(status, result_list, data)
     index = result_list.index(@selected)
     enumeration = index + 1
     col = $stdout.winsize[1]
-    
-    if status == :failed || status == :pending
+
+    if [:failed, :pending].include?(status)
       data = data.fully_formatted(enumeration).split("\n")
-      data[0] = ""
-      data.insert(1,"-"*col)
-      data.insert(3,"-"*col)
+      data[0] = ''
+      data.insert(1, '-'*col)
+      data.insert(3, '-'*col)
       @output.puts data
     else
-      @output.puts "-"*col
+      @output.puts '-'*col
       @output.puts "#{enumeration}) " + @selected.description
-      @output.puts "-"*col
-      color("PASSED", :green)
+      @output.puts '-'*col
+      color('PASSED', :green)
     end
   end
 
@@ -83,6 +87,6 @@ module Format
     return "" if !data[:parent_example_group]
 
     parent_data = data[:parent_example_group]
-    parent_description(parent_data) + parent_data[:description] + ": "
+    parent_description(parent_data) + parent_data[:description] + ': '
   end
 end

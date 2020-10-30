@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Terminal
   def clear_frame
     system("printf '\e[H'")
@@ -8,7 +10,7 @@ module Terminal
   def hide_cursor
     system("printf '\e[?25l'")
   end
-  
+
   def reveal_cursor
     system("printf '\e[?25h'")
   end
