@@ -44,5 +44,6 @@ module Initialize
     init_pass_inclusion
     init_map
     init_selector
+    @instructions = false
   end
 end

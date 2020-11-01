@@ -2,6 +2,7 @@
 
 module Instructions
   def full_instructions
+    i_for_instructions
     @all_passing ? bold("ALL EXAMPLES PASSED\n") : filter_pass_instructions
     select_instructions
     back_instructions unless top_level?
@@ -27,6 +28,11 @@ module Instructions
     @output.puts "Press F to #{verb} passing examples"
   end
 
+  def i_for_instructions
+    verb = @instructions ? 'hide' : 'view'
+    @output.puts "Press I to #{verb} instructions"
+  end
+
   def select_instructions
     top_fail_text unless @failed.empty?
     @output.puts 'Press ↑ or ↓ to navigate list' if @list.count > 1
@@ -38,6 +44,7 @@ module Instructions
   end
 
   def example_summary_instructions
+    i_for_instructions
     top_fail_text unless @failed.empty? || @selected == @failed.first
     back_instructions
     q_to_exit

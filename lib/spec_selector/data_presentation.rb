@@ -9,7 +9,7 @@ module DataPresentation
   def print_messages
     @messages.each { |message| italicize message }
     empty_line
-    stand_alone_exit
+    exit_only
   end
 
   def examples_summary(notification)
@@ -30,7 +30,7 @@ module DataPresentation
     empty_line
     italicize "#{errors} errors occurred outside of examples"
     italicize 'Examples were not successfully executed'
-    stand_alone_exit
+    exit_only
   end
 
   def status_count
@@ -78,7 +78,7 @@ module DataPresentation
   def display_list
     clear_frame
     test_data_summary
-    full_instructions
+    @instructions ? full_instructions : i_for_instructions
     empty_line
     @list.each { |item| format_list_item(item) }
   end
@@ -88,9 +88,9 @@ module DataPresentation
     test_data_summary
     status = @selected.execution_result.status
     @list, data = example_list(status)
-    example_summary_instructions
+    @instructions ? example_summary_instructions : i_for_instructions
     @selector_index = @list.index(@selected)
-    view_other_examples(status) if @list.count > 1
+    view_other_examples(status) if @list.count > 1 && @instructions
     format_example(status, data)
     navigate
   end
@@ -104,5 +104,10 @@ module DataPresentation
     data = @pending_summaries[@selected] if status == :pending
 
     [result_list, data]
+  end
+
+  def toggle_instructions
+    @instructions = @instructions ? false : true
+    summary_list? ? display_example : selector
   end
 end

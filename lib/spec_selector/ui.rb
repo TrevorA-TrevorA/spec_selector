@@ -1,52 +1,33 @@
 # frozen_string_literal: true
 
 module UI
-  UP = "\e[A"
-  DOWN = "\e[B"
-  DIRECTIONS = [UP, DOWN].freeze
+  DIRECTION_KEYS = ["\e[A", "\e[B"].freeze
+  TREE_NAVIGATION_KEYS = ["\r", "\x7F", "\e"].freeze
+  OPTION_KEYS = [/t/i, /f/i, /q/i, /i/i].freeze
 
-  def stand_alone_exit
+  def exit_only
     q_to_exit
-    reading_input = true
-
-    while reading_input
-      input = $stdin.getch
-      quit if input.match?(/q/i)
-    end
+    loop { quit if user_input.match?(/q/i) }
   end
 
   def selector
     clear_frame
     @list ||= @active_map[:top_level]
     @selected ||= @list.first
-    test_data_summary
     display_list
     navigate
   end
 
   def navigate
     @selector_index = @list.index(@selected) || 0
-    reading_input = true
+    loop { bind_input }
+  end
 
-    while reading_input
-      input = user_input
-      directions(input) if DIRECTIONS.include?(input)
-
-      case input
-      when /f/i
-        passing_filter
-      when /t/i
-        top_fail
-      when /q/i
-        quit
-      when "\x7F"
-        back
-      when "\e"
-        back_to_top_level
-      when "\r"
-        select_item
-      end
-    end
+  def bind_input
+    input = user_input
+    direction_keys(input) if DIRECTION_KEYS.include?(input)
+    tree_nav_keys(input) if TREE_NAVIGATION_KEYS.include?(input)
+    option_keys(input) if OPTION_KEYS.any? { |key| input.match?(key) }
   end
 
   def quit
@@ -61,18 +42,6 @@ module UI
     selector
   end
 
-  def up
-    @selector_index = (@selector_index - 1) % @list.length
-    @selected = @list[@selector_index]
-    summary_list? ? display_example : display_list
-  end
-
-  def down
-    @selector_index = (@selector_index + 1) % @list.length
-    @selected = @list[@selector_index]
-    summary_list? ? display_example : display_list
-  end
-
   def select_item
     return if summary_list?
 
@@ -83,9 +52,7 @@ module UI
   end
 
   def top_fail
-    if @failed.empty?
-      summary_list? ? display_example : return
-    end
+    return if @failed.empty?
 
     @selected = @failed.first
     display_example
@@ -109,9 +76,41 @@ module UI
     end
   end
 
-  def directions(input)
-    up if input == UP
-    down if input == DOWN
+  def direction_keys(input)
+    case input
+    when "\e[A"
+      dir = -1 # up
+    when "\e[B"
+      dir = 1 # down
+    end
+
+    @selector_index = (@selector_index + dir) % @list.length
+    @selected = @list[@selector_index]
+    summary_list? ? display_example : display_list
+  end
+
+  def tree_nav_keys(input)
+    case input
+    when "\r"
+      select_item
+    when "\x7F"
+      back
+    when "\e"
+      back_to_top_level
+    end
+  end
+
+  def option_keys(input)
+    case input
+    when /t/i
+      top_fail
+    when /f/i
+      passing_filter
+    when /q/i
+      quit
+    when /i/i
+      toggle_instructions
+    end
   end
 
   def user_input
