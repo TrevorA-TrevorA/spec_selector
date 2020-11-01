@@ -92,7 +92,7 @@ module DataPresentation
     @selector_index = @list.index(@selected)
     view_other_examples(status) if @list.count > 1
     format_example(status, data)
-    navigate_summaries
+    navigate
   end
 
   def example_list(status)

@@ -13,7 +13,6 @@ describe SpecSelector do
       full_description: 'full_description' }
   end
 
-
   let(:pass_result) { instance_double('ExecutionResult', status: :passed) }
   let(:pending_result) { instance_double('ExecutionResult', status: :pending) }
   let(:fail_result) do

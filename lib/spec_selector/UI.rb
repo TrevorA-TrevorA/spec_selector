@@ -21,12 +21,11 @@ module UI
     @selected ||= @list.first
     test_data_summary
     display_list
-    navigate_list
+    navigate
   end
 
-  def navigate_list
+  def navigate
     @selector_index = @list.index(@selected) || 0
-
     reading_input = true
 
     while reading_input
@@ -41,7 +40,6 @@ module UI
       when /q/i
         quit
       when "\x7F"
-        next if top_level?
         back
       when "\e"
         back_to_top_level
@@ -66,18 +64,18 @@ module UI
   def up
     @selector_index = (@selector_index - 1) % @list.length
     @selected = @list[@selector_index]
-    exec_result_lists = [@failed, @pending, @passed]
-    exec_result_lists.include?(@list) ? display_example : display_list
+    summary_list? ? display_example : display_list
   end
 
   def down
     @selector_index = (@selector_index + 1) % @list.length
     @selected = @list[@selector_index]
-    exec_result_lists = [@failed, @pending, @passed]
-    exec_result_lists.include?(@list) ? display_example : display_list
+    summary_list? ? display_example : display_list
   end
 
   def select_item
+    return if summary_list?
+
     display_example if example?(@selected)
     @list = @active_map[@selected.metadata]
     @selected = nil
@@ -85,38 +83,29 @@ module UI
   end
 
   def top_fail
-    return if @failed.empty?
+    if @failed.empty?
+      summary_list? ? display_example : return
+    end
 
     @selected = @failed.first
     display_example
   end
 
   def back
-    data = parent_data(@selected.metadata)
-    parent_key = parent_data(data) || :top_level
-    @list = @active_map[parent_key]
-    @selected = @groups[data]
+    return if top_level?
+
+    parent_list
     selector
   end
 
-  def navigate_summaries
-    @selector_index = @list.index(@selected)
-
-    input = user_input
-    directions(input) if DIRECTIONS.include?(input)
-
-    case input
-    when /t/i
-      @failed.empty? ? display_example : top_fail
-    when "\x7F"
+  def parent_list
+    if summary_list?
       @list = @active_map[@selected.example_group.metadata]
-      selector
-    when /q/i
-      quit
-    when "\e"
-      back_to_top_level
     else
-      display_example
+      data = parent_data(@selected.metadata)
+      parent_key = parent_data(data) || :top_level
+      @list = @active_map[parent_key]
+      @selected = @groups[data]
     end
   end
 
