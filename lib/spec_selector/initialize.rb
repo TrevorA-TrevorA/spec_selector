@@ -27,6 +27,7 @@ module Initialize
     @groups = {}
     @map = {}
     @active_map = @map
+    @list = nil
   end
 
   def init_selector

@@ -2,9 +2,9 @@
 
 module Helpers
   def all_passing?
-    if (@pending_count + @fail_count == 0) && @pass_count.positiive?
-      @all_passing = true
-    end
+    return unless (@pending_count + @fail_count).zero? && @pass_count.positive?
+
+    @all_passing = true
   end
 
   def all_passed?(examples)
@@ -29,5 +29,9 @@ module Helpers
 
   def empty_line
     @output.puts "\n"
+  end
+
+  def top_level?
+    @list == @active_map[:top_level]
   end
 end

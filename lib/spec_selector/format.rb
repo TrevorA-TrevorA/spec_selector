@@ -58,33 +58,36 @@ module Format
 
   def lineage(data)
     parent = parent_data(data)
-
     return data[:description] unless parent
 
     lineage(parent) + ' -> ' + data[:description]
   end
 
-  def format_example(status, result_list, data)
-    index = result_list.index(@selected)
-    enumeration = index + 1
-    col = $stdout.winsize[1]
-
-    if [:failed, :pending].include?(status)
-      data = data.fully_formatted(enumeration).split("\n")
-      data[0] = ''
-      data.insert(1, '-'*col)
-      data.insert(3, '-'*col)
-      @output.puts data
+  def format_example(status, data)
+    if %i[failed pending].include?(status)
+      print_nonpassing_example(data)
     else
-      @output.puts '-'*col
-      @output.puts "#{enumeration}) " + @selected.description
-      @output.puts '-'*col
-      color('PASSED', :green)
+      print_passing_example
     end
   end
 
+  def print_nonpassing_example(data)
+    data = data.fully_formatted(@selector_index + 1).split("\n")
+    data[0] = ''
+    data.insert(1, '-' * term_width)
+    data.insert(3, '-' * term_width)
+    @output.puts data
+  end
+
+  def print_passing_example
+    @output.puts '-' * term_width
+    @output.puts "#{@selector_index + 1}) " + @selected.description
+    @output.puts '-' * term_width
+    color('PASSED', :green)
+  end
+
   def parent_description(data)
-    return "" if !data[:parent_example_group]
+    return '' unless data[:parent_example_group]
 
     parent_data = data[:parent_example_group]
     parent_description(parent_data) + parent_data[:description] + ': '

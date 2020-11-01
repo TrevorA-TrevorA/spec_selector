@@ -18,8 +18,9 @@ module DataPresentation
     status_summary(notification)
     test_data_summary
     all_passing?
-    display_list(@map[:top_level])
-    selector(@map[:top_level])
+    @list = @map[:top_level]
+    display_list
+    selector
   end
 
   def errors_summary(notification)
@@ -45,9 +46,9 @@ module DataPresentation
   end
 
   def exclude_passing!
-    list = @map.reject { |_, v| v.all? { |g| all_passed?(fetch_examples(g)) } }
-    list.transform_values! { |v| v.reject { |g| all_passed?(fetch_examples(g)) } }
-    @active_map = list
+    alt_map = @map.reject { |_, v| v.all? { |g| all_passed?(fetch_examples(g)) } }
+    alt_map.transform_values! { |v| v.reject { |g| all_passed?(fetch_examples(g)) } }
+    @active_map = alt_map
     @exclude_passing = true
   end
 
@@ -62,8 +63,9 @@ module DataPresentation
     @exclude_passing ? include_passing! : exclude_passing!
     new_list = @active_map[parent_data(@selected.metadata)]
     new_list ||= @active_map[:top_level]
+    @list = new_list
     @selected = nil
-    selector(new_list)
+    selector
   end
 
   def status_summary(notification)
@@ -73,23 +75,24 @@ module DataPresentation
     @summary << "Files loaded in #{notification.load_time} seconds"
   end
 
-  def display_list(list)
+  def display_list
     clear_frame
     test_data_summary
-    full_instructions(list)
+    full_instructions
     empty_line
-    list.each { |item| format_list_item(item) }
+    @list.each { |item| format_list_item(item) }
   end
 
   def display_example
     clear_frame
     test_data_summary
     status = @selected.execution_result.status
-    result_list, data = example_list(status)
+    @list, data = example_list(status)
     example_summary_instructions
-    view_other_examples(status) if result_list.count > 1
-    format_example(status, result_list, data)
-    navigate_summaries(result_list)
+    @selector_index = @list.index(@selected)
+    view_other_examples(status) if @list.count > 1
+    format_example(status, data)
+    navigate_summaries
   end
 
   def example_list(status)

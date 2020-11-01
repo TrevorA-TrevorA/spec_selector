@@ -14,4 +14,8 @@ module Terminal
   def reveal_cursor
     system("printf '\e[?25h'")
   end
+
+  def term_width
+    $stdout.winsize[1]
+  end
 end

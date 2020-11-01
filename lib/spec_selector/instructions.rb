@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module Instructions
-  def full_instructions(list)
+  def full_instructions
     @all_passing ? bold("ALL EXAMPLES PASSED\n") : filter_pass_instructions
-    select_instructions(list)
-    back_instructions unless list == @active_map[:top_level]
+    select_instructions
+    back_instructions unless top_level?
     q_to_exit
   end
 
@@ -27,9 +27,9 @@ module Instructions
     @output.puts "Press F to #{verb} passing examples"
   end
 
-  def select_instructions(list)
+  def select_instructions
     top_fail_text unless @failed.empty?
-    @output.puts 'Press ↑ or ↓ to navigate list' if list.count > 1
+    @output.puts 'Press ↑ or ↓ to navigate list' if @list.count > 1
     @output.puts 'Press [enter] to select'
   end
 
