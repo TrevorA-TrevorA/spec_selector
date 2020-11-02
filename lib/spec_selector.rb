@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rspec/core'
-require 'rspec/core/formatters/console_codes'
 require 'io/console'
 require 'byebug'
 require_relative 'spec_selector/terminal'
@@ -14,15 +13,14 @@ require_relative 'spec_selector/initialize'
 require_relative 'spec_selector/instructions'
 
 class SpecSelector
-  include RSpec::Core::Formatters::ConsoleCodes
-  include UI
-  include Terminal
-  include Format
-  include DataPresentation
-  include Helpers
-  include DataMap
-  include Initialize
-  include Instructions
+  include Selector::UI
+  include Selector::Terminal
+  include Selector::Format
+  include Selector::DataPresentation
+  include Selector::Helpers
+  include Selector::DataMap
+  include Selector::Initialize
+  include Selector::Instructions
 
   RSpec::Core::Formatters.register self,
                                    :message,
@@ -44,7 +42,7 @@ class SpecSelector
   def example_group_started(notification)
     group = notification.group
     map(group)
-    @groups[group.metadata] = group
+    @groups[group.metadata[:block]] = group
   end
 
   def example_passed(notification)
