@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Selector
+  # The Terminal module contains methods concerned with terminal display
+  # function.
   module Terminal
     def clear_frame
       system("printf '\e[H'")

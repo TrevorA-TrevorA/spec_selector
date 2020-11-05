@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Selector
+  # The UI module contains methods used to bind and process user input.
   module UI
     DIRECTION_KEYS = ["\e[A", "\e[B"].freeze
     TREE_NAVIGATION_KEYS = ["\r", "\x7F", "\e"].freeze

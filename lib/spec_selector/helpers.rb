@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Selector
+  # The Helpers module contains helper methods shared across multiple
+  # concerns.
   module Helpers
     def all_passing?
       (@pending_count + @fail_count).zero? && @pass_count.positive?

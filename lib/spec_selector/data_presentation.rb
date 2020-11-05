@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Selector
+  # The DataPresentation module contains methods used to render mapped data.
   module DataPresentation
     def test_data_summary
       status_count

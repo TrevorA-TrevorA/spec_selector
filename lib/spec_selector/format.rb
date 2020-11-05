@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Selector
+  # The Format module contains methods used for simple text formatting, as well
+  # as methods that determine how specific list items will be formatted.
   module Format
     ESCAPE_CODES = {
       green: 32,

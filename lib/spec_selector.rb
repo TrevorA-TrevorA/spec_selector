@@ -12,6 +12,8 @@ require_relative 'spec_selector/data_map'
 require_relative 'spec_selector/initialize'
 require_relative 'spec_selector/instructions'
 
+# The SpecSelector instance receives example execution data from the reporter
+# and arranges it into a formatted, traversable map.
 class SpecSelector
   include Selector::UI
   include Selector::Terminal

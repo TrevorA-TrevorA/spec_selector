@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Selector
+  # The Initialize module contains methods that initialize specific sets of
+  # instance variables for the SpecSelector instance.
   module Initialize
     def init_example_store
       @failed = []

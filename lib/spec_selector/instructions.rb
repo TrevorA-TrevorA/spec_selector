@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Selector
+  # The Instructions module contains methods used to render the
+  # appropriate user instructions.
   module Instructions
     def full_instructions
       i_for_instructions

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module Selector
+  # The DataMap module contains methods used to build a hash map of nested
+  # lists, which can be rendered in their traversable form through the
+  # DataPresentation methods.
   module DataMap
     def map(group)
       map_group(group)
