@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 require 'spec_selector'
+require 'factory_bot'
+
+RCN = RSpec::Core::Notifications
+EXAMPLE_STUBS = { description: 'description',
+                  execution_result: 'result',
+                  full_description: 'full_description' }.freeze
 
 alias ivar instance_variable_get
 
@@ -14,4 +20,10 @@ RSpec.configure do |config|
   end
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
+
+  config.include FactoryBot::Syntax::Methods
+
+  config.before(:suite) do
+    FactoryBot.find_definitions
+  end
 end

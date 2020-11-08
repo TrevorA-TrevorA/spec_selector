@@ -75,7 +75,7 @@ module Selector
         p_data = parent_data(data)
         parent_key = p_data ? p_data[:block] : :top_level
         @list = @active_map[parent_key]
-        @selected = @groups[data]
+        @selected = @groups[data[:block]]
       end
     end
 
