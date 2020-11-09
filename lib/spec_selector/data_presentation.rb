@@ -8,10 +8,11 @@ module Selector
       print_summary
     end
 
-    def print_messages
+    def print_messages(notification)
+      err_count = notification.errors_outside_of_examples_count
       @messages.each { |message| italicize message }
       empty_line
-      exit_only
+      err_count.positive? ? errors_summary(notification) : exit_only
     end
 
     def examples_summary(notification)
@@ -23,11 +24,12 @@ module Selector
     end
 
     def errors_summary(notification)
-      errors = notification.errors_outside_of_examples_count
+      err_count = notification.errors_outside_of_examples_count
+      word_form = err_count > 1 ? 'errors' : 'error'
       italicize "Finished in #{notification.duration} seconds"
       italicize "Files loaded in #{notification.load_time}"
       empty_line
-      italicize "#{errors} errors occurred outside of examples"
+      italicize "#{err_count} #{word_form} occurred outside of examples"
       italicize 'Examples were not successfully executed'
       exit_only
     end

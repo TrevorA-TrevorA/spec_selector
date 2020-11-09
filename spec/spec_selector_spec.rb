@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 require 'stringio'
+require 'byebug'
 
 describe SpecSelector do
   subject(:spec_selector) { described_class.new(StringIO.new) }
 
   let(:output) { spec_selector.ivar(:@output).string }
-  let(:pass_result) { build(:execution_result, status: :passed) }
+  let(:pass_result) { build(:execution_result) }
   let(:pending_result) { build(:execution_result, status: :pending) }
   let(:fail_result) do
     build(:execution_result, status: :failed, exception: 'error')
@@ -113,8 +114,51 @@ describe SpecSelector do
       expect(fail_count).to eq(1)
     end
 
-    it 'calls #status count' do
+    it 'calls #status_count' do
       expect(output).to match(/FAIL: \d+/)
+    end
+  end
+
+  describe '#dump_summary' do
+    let(:notification) { instance_double('SummaryNotification') }
+
+    before do
+      allow(notification).to receive(:example_count) { 5 }
+      allow(notification).to receive(:duration) { 3 }
+      allow(notification).to receive(:load_time) { 2 }
+    end
+    
+    it 'calls #clear_frame' do
+      allow(spec_selector).to receive(:examples_summary) { nil }
+      expect(spec_selector).to receive(:clear_frame)
+      spec_selector.dump_summary(notification)
+    end
+  
+    context 'when @messages is not empty' do
+      it 'calls #print_messages' do
+        spec_selector.instance_variable_set(:@messages, ['some messages']) 
+        allow(notification).to receive(:errors_outside_of_examples_count) { 0 }
+        allow(spec_selector).to receive(:examples_summary)
+        allow(spec_selector).to receive(:exit_only)
+        expect(spec_selector).to receive(:print_messages).with(notification)
+        .and_call_original
+        spec_selector.dump_summary(notification)
+      end
+    end
+
+    context 'when @messages is empty' do
+      it 'does not call #print_messages' do
+        allow(spec_selector).to receive(:examples_summary)
+        expect(spec_selector).not_to receive(:print_messages)
+        spec_selector.dump_summary(notification)
+      end
+
+      it 'calls #examples_summary' do
+        allow(spec_selector).to receive(:status_summary).with(notification)
+        allow(spec_selector).to receive(:selector)
+        expect(spec_selector).to receive(:examples_summary).with(notification)
+        spec_selector.dump_summary(notification)
+      end
     end
   end
 end
