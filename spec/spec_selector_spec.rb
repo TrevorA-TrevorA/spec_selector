@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'stringio'
-
 describe SpecSelector do
   subject(:spec_selector) { described_class.new(StringIO.new) }
 

@@ -2,6 +2,7 @@
 
 require 'spec_selector'
 require 'factory_bot'
+require 'stringio'
 
 RCN = RSpec::Core::Notifications
 EXAMPLE_STUBS = { description: 'description',

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'stringio'
-
 describe Selector::Initialize do
   # the subject calls #initialze_all during initialization, which calls
   # all of the other methods in this block.

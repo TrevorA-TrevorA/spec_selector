@@ -6,7 +6,7 @@ module Selector
   module Instructions
     def full_instructions
       i_for_instructions
-      filter_pass_instructions unless all_passing?
+      filter_pass_instructions unless all_passing? || none_passing?
       select_instructions
       back_instructions unless top_level?
       q_to_exit

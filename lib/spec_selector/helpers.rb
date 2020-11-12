@@ -8,6 +8,10 @@ module Selector
       (@pending_count + @fail_count).zero? && @pass_count.positive?
     end
 
+    def none_passing?
+      (@pending_count + @fail_count).positive? && @pass_count.zero?
+    end
+
     def all_passed?(examples)
       examples.all? { |example| example.execution_result.status == :passed }
     end
