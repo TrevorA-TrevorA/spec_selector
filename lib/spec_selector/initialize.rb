@@ -39,7 +39,6 @@ module Selector
 
     def initialize_all
       @messages = []
-      hide_cursor
       init_example_store
       init_summaries
       init_counters

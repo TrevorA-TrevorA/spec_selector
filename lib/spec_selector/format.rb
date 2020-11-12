@@ -40,7 +40,7 @@ module Selector
         highlight(description)
       else
         green(description) if all_passed?(data)
-        yellow(description) if any_pending?(data)
+        yellow(description) if any_pending?(data) && !any_failed?(data)
         red(description) if any_failed?(data)
       end
     end

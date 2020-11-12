@@ -34,6 +34,7 @@ class SpecSelector
 
   def initialize(output)
     @output = output
+    hide_cursor
     initialize_all
   end
 

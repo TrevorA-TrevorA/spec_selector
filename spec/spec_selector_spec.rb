@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'stringio'
-require 'byebug'
 
 describe SpecSelector do
   subject(:spec_selector) { described_class.new(StringIO.new) }
@@ -29,14 +28,14 @@ describe SpecSelector do
     let(:group) do
       instance_double('ExampleGroup', metadata: { block: 'key' }, examples: [])
     end
-    
+
     let(:notification) { RCN::GroupNotification.new(group) }
 
     it 'passes the example group to SpecSelector#map' do
       expect(spec_selector).to receive(:map).with(group)
       spec_selector.example_group_started(notification)
     end
-    
+
     it 'stores example group in the @groups hash' do
       spec_selector.example_group_started(notification)
       groups = spec_selector.ivar(:@groups)
@@ -127,16 +126,16 @@ describe SpecSelector do
       allow(notification).to receive(:duration) { 3 }
       allow(notification).to receive(:load_time) { 2 }
     end
-    
+
     it 'calls #clear_frame' do
       allow(spec_selector).to receive(:examples_summary) { nil }
       expect(spec_selector).to receive(:clear_frame)
       spec_selector.dump_summary(notification)
     end
-  
+
     context 'when @messages is not empty' do
       it 'calls #print_messages' do
-        spec_selector.instance_variable_set(:@messages, ['some messages']) 
+        spec_selector.instance_variable_set(:@messages, ['some messages'])
         allow(notification).to receive(:errors_outside_of_examples_count) { 0 }
         allow(spec_selector).to receive(:examples_summary)
         allow(spec_selector).to receive(:exit_only)
