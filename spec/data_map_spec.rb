@@ -2,8 +2,8 @@ describe Selector::DataMap do
   subject(:spec_selector) { SpecSelector.new(StringIO.new) }
 
   let(:example_group) do
-    instance_double('ExampleGroup', examples: [], metadata: { 
-      block: :example_group_block 
+    instance_double('ExampleGroup', examples: [], metadata: {
+      block: :example_group_block
     })
   end
 
@@ -44,7 +44,7 @@ describe Selector::DataMap do
     it 'lazy-initializes @map[:top_level] to an array' do
       expect(map[:top_level]).to be_an(Array)
     end
-    
+
     it 'stores example group in @map[:top_level]' do
       expect(map[:top_level]).to include(example_group)
     end
@@ -66,11 +66,11 @@ describe Selector::DataMap do
     context 'when metadata hash is from an example group' do
       context 'when the example group has a parent group' do
         let(:example_group) do
-          instance_double('ExampleGroup',  metadata: { 
-            parent_example_group: { block: :parent_example_block } 
+          instance_double('ExampleGroup',  metadata: {
+            parent_example_group: { block: :parent_example_block }
           })
         end
-        
+
         it 'returns the parent group metadata' do
           expect(spec_selector.parent_data(example_group.metadata))
           .to eq(example_group.metadata[:parent_example_group])
@@ -91,17 +91,17 @@ describe Selector::DataMap do
 
     context 'when example group has parent group' do
       let(:example_group) do
-        instance_double('ExampleGroup', metadata: { 
+        instance_double('ExampleGroup', metadata: {
           parent_example_group: { block: :parent_block }
          })
       end
 
 
-      
+
       it 'stores the parent block as a key in @map initialized to an array' do
         expect(map[:parent_block]).to be_an(Array)
       end
-      
+
       it 'stores the example group in the parent block array' do
         expect(map[:parent_block]).to include(example_group)
       end
@@ -125,7 +125,7 @@ describe Selector::DataMap do
     it 'stores an example block as a key in @map with an array as its value' do
       expect(map[:example_group_block]).to be_an(Array)
     end
-    
+
     it 'appends the examples to the array' do
       expect(map[:example_group_block]).to include(example)
     end

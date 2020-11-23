@@ -89,7 +89,7 @@ module Selector
       clear_frame
       test_data_summary
       status = @selected.execution_result.status
-      @list, data = example_list(status)
+      @list, data = example_list
       @instructions ? example_summary_instructions : i_for_instructions
       @selector_index = @list.index(@selected)
       view_other_examples(status) if @list.count > 1 && @instructions
@@ -97,7 +97,8 @@ module Selector
       navigate
     end
 
-    def example_list(status)
+    def example_list
+      status = @selected.execution_result.status
       result_list = @failed if status == :failed
       result_list = @pending if status == :pending
       result_list = @passed if status == :passed

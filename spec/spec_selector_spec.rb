@@ -6,11 +6,10 @@ describe SpecSelector do
   let(:output) { spec_selector.ivar(:@output).string }
   let(:pass_result) { build(:execution_result) }
   let(:pending_result) { build(:execution_result, status: :pending) }
+
   let(:fail_result) do
     build(:execution_result, status: :failed, exception: 'error')
   end
-
-  after(:all) { system("printf '\e[?25h'") }
 
   describe '#message' do
     let(:notification) { RCN::MessageNotification.new('message') }
@@ -123,12 +122,6 @@ describe SpecSelector do
       allow(notification).to receive(:example_count) { 5 }
       allow(notification).to receive(:duration) { 3 }
       allow(notification).to receive(:load_time) { 2 }
-    end
-
-    it 'calls #clear_frame' do
-      allow(spec_selector).to receive(:examples_summary) { nil }
-      expect(spec_selector).to receive(:clear_frame)
-      spec_selector.dump_summary(notification)
     end
 
     context 'when @messages is not empty' do

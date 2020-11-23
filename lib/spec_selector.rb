@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'pry'
 
 require 'rspec/core'
 require 'io/console'
@@ -72,7 +73,6 @@ class SpecSelector
   end
 
   def dump_summary(notification)
-    clear_frame
     print_messages(notification) unless @messages.empty?
     examples_summary(notification)
   end
