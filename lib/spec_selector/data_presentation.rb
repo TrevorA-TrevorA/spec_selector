@@ -86,6 +86,7 @@ module Selector
     end
 
     def display_example
+      @example_display = true
       clear_frame
       test_data_summary
       status = @selected.execution_result.status
@@ -111,7 +112,7 @@ module Selector
 
     def toggle_instructions
       @instructions = @instructions ? false : true
-      summary_list? ? display_example : selector
+      @example_display ? display_example : selector
     end
   end
 end

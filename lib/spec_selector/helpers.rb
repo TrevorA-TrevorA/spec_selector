@@ -39,9 +39,5 @@ module Selector
     def top_level?
       @list == @active_map[:top_level]
     end
-
-    def summary_list?
-      [@failed, @pending, @passed].include?(@list)
-    end
   end
 end

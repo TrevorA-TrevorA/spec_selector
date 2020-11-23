@@ -45,7 +45,7 @@ module Selector
     end
 
     def select_item
-      return if summary_list?
+      return if @example_display
 
       display_example if example?(@selected)
       @list = @active_map[@selected.metadata[:block]]
@@ -68,7 +68,8 @@ module Selector
     end
 
     def parent_list
-      if summary_list?
+      if @example_display
+        @example_display = false
         @list = @active_map[@selected.example_group.metadata[:block]]
       else
         data = parent_data(@selected.metadata)
@@ -83,7 +84,7 @@ module Selector
       dir = input == "\e[A" ? -1 : 1
       @selector_index = (@selector_index + dir) % @list.length
       @selected = @list[@selector_index]
-      summary_list? ? display_example : display_list
+      @example_display ? display_example : display_list
     end
 
     def tree_nav_keys(input)
