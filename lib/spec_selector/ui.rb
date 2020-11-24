@@ -39,6 +39,7 @@ module Selector
     end
 
     def top_level_list
+      @example_display = false
       @selected = nil
       @list = @active_map[:top_level]
       selector
