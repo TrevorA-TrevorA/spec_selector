@@ -73,7 +73,7 @@ FactoryBot.define do
     example_count { 25 }
     duration { 1.5 }
     load_time { 0.5 }
-    errors_outside_of_example_count { 0 }
+    errors_outside_of_examples_count { 0 }
   end
 
   factory :skipped_example_notification, 
