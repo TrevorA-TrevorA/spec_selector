@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 describe SpecSelector do
-  subject(:spec_selector) { described_class.new(StringIO.new) }
+  include_context 'shared objects'
+
+  let(:spec_selector) { described_class.new(StringIO.new) }
 
   let(:output) { spec_selector.ivar(:@output).string }
   let(:pass_result) { build(:execution_result) }
@@ -115,39 +117,43 @@ describe SpecSelector do
     end
   end
 
-  describe '#dump_summary' do
-    let(:notification) { instance_double('SummaryNotification') }
+  describe '#dump_summary', break_loop: true do
+    let(:notification) { build(:summary_notification) }
 
-    before do
-      allow(notification).to receive(:example_count) { 5 }
-      allow(notification).to receive(:duration) { 3 }
-      allow(notification).to receive(:load_time) { 2 }
+    context 'when errors outside of examples have occurred' do
+      let(:notification) do
+         build(:summary_notification, errors_outside_of_examples_count: 2)
+      end
+
+      it 'passes notification to #print_errors' do
+        allow(spec_selector).to receive(:print_errors).and_call_original
+        spec_selector.dump_summary(notification)
+        expect(spec_selector).to have_received(:print_errors).with(notification)
+      end
     end
 
-    context 'when @messages is not empty' do
-      it 'calls #print_messages' do
-        spec_selector.instance_variable_set(:@messages, ['some messages'])
-        allow(notification).to receive(:errors_outside_of_examples_count) { 0 }
-        allow(spec_selector).to receive(:examples_summary)
-        allow(spec_selector).to receive(:exit_only)
-        expect(spec_selector).to receive(:print_messages).with(notification)
-        .and_call_original
+    context 'when errors outside of examples have not occured' do
+      it 'does not call #print_errors' do
+        allow(spec_selector).to receive(:print_errors).and_call_original
+        spec_selector.dump_summary(notification)
+        expect(spec_selector).not_to have_received(:print_errors)
+      end
+    end
+
+    context 'when non-error messages are present with no examples' do
+      it 'calls #messages only' do
+        spec_selector.ivar(:@messages) << 'some message'
         spec_selector.dump_summary(notification)
       end
     end
 
-    context 'when @messages is empty' do
-      it 'does not call #print_messages' do
-        allow(spec_selector).to receive(:examples_summary)
-        expect(spec_selector).not_to receive(:print_messages)
+    context 'when examples successfully executed' do
+      it 'passes notification to #examples_summary' do
+        ivar_set(:@map, mixed_map)
+        allow(spec_selector).to receive(:examples_summary).and_call_original
         spec_selector.dump_summary(notification)
-      end
-
-      it 'calls #examples_summary' do
-        allow(spec_selector).to receive(:status_summary).with(notification)
-        allow(spec_selector).to receive(:selector)
-        expect(spec_selector).to receive(:examples_summary).with(notification)
-        spec_selector.dump_summary(notification)
+        expect(spec_selector).to have_received(:examples_summary)
+        .with(notification)
       end
     end
   end

@@ -13,7 +13,7 @@ describe Selector::DataPresentation do
 
   describe '#test_data_summary' do
     before do
-      silence_methods(:status_count, :print_summary)
+      allow_methods(:status_count, :print_summary)
       spec_selector.test_data_summary
     end
 
@@ -26,6 +26,25 @@ describe Selector::DataPresentation do
     end
   end
 
+  describe '#print_errors' do
+    let(:notification) do
+      build(:summary_notification, errors_outside_of_examples_count: 2)
+    end
+
+    before do
+      spec_selector.ivar(:@messages) << 'some message'
+      spec_selector.print_errors(notification)
+    end
+
+    it 'calls #print_messages' do
+      expect(output).to match(/[some message]/)
+    end
+    
+    it 'passes notification to #errors_summary' do
+      expect(output).to match(/[2 errors occurred outside of examples]/)
+    end
+  end
+
   describe '#print_messages' do
     before do
       spec_selector.ivar(:@messages) << 'example message one'
@@ -33,25 +52,9 @@ describe Selector::DataPresentation do
     end
 
     it 'prints each message' do
-      spec_selector.print_messages(notification)
+      spec_selector.print_messages
       expect(output).to match(/example message one/)
       expect(output).to match(/example message two/)
-    end
-
-    context 'when errors outside examples have occurred' do
-      it 'passes the summary notification to #errors_summary' do
-        allow(notification).to receive(:errors_outside_of_examples_count) { 1 }
-        allow(spec_selector).to receive(:errors_summary).with(notification)
-        spec_selector.print_messages(notification)
-        expect(spec_selector).to have_received(:errors_summary).with(notification)
-      end
-    end
-
-    context 'when no errors outside examples have occurred' do
-      it 'calls #exit_only' do
-        spec_selector.print_messages(notification)
-        expect(spec_selector).to have_received(:exit_only)
-      end
     end
   end
 
@@ -178,7 +181,7 @@ describe Selector::DataPresentation do
 
   describe '#passing_filter' do
     before do
-      silence_methods(:display_list, :navigate)
+      allow_methods(:display_list, :navigate)
       map, list, group = [mixed_map, mixed_list, pass_group]
       set_ivars(:@map => map, :@list => list, :@selected => group)
     end
@@ -265,7 +268,7 @@ describe Selector::DataPresentation do
   end
 
   describe '#display_example' do
-    before { silence_methods(:test_data_summary, :navigate) }
+    before { allow_methods(:test_data_summary, :navigate) }
 
     context 'when example is pending' do
       it 'displays example summary' do
@@ -323,7 +326,7 @@ describe Selector::DataPresentation do
 
   describe '#toggle_instructions' do
     before do
-      silence_methods(:test_data_summary, :navigate)
+      allow_methods(:test_data_summary, :navigate)
       set_ivars(:@map => mixed_map, :@list => mixed_list)
     end
 

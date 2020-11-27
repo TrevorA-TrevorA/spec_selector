@@ -8,15 +8,18 @@ module Selector
       print_summary
     end
 
-    def print_messages(notification)
-      err_count = notification.errors_outside_of_examples_count
+    def print_errors(notification)
+      clear_frame
+      print_messages
+      errors_summary(notification)
+    end
+
+    def print_messages
       @messages.each { |message| italicize message }
       empty_line
-      err_count.positive? ? errors_summary(notification) : exit_only
     end
 
     def examples_summary(notification)
-      clear_frame
       @summary_notification = notification
       status_summary(notification)
       @list = @map[:top_level]
@@ -62,10 +65,13 @@ module Selector
       return if all_passing?
 
       @exclude_passing ? include_passing! : exclude_passing!
-      new_list = @active_map[parent_data(@selected.metadata)]
-      new_list ||= @active_map[:top_level]
+      return if @example_display && @list != @passed
+      p_data = parent_data(@selected.metadata)
+      key = p_data ? p_data[:block] : :top_level
+      new_list = @active_map[key]
       @list = new_list
       @selected = nil
+      @example_display = false
       selector
     end
 
@@ -79,6 +85,7 @@ module Selector
     def display_list
       clear_frame
       test_data_summary
+      print_messages unless @messages.empty?
       all_passed_message if all_passing?
       @instructions ? full_instructions : i_for_instructions
       empty_line
@@ -113,6 +120,12 @@ module Selector
     def toggle_instructions
       @instructions = @instructions ? false : true
       @example_display ? display_example : selector
+    end
+
+    def messages_only
+      clear_frame
+      print_messages
+      exit_only
     end
   end
 end

@@ -73,7 +73,9 @@ class SpecSelector
   end
 
   def dump_summary(notification)
-    print_messages(notification) unless @messages.empty?
+    error_count = notification.errors_outside_of_examples_count
+    print_errors(notification) if error_count.positive?
+    messages_only if @map.empty?
     examples_summary(notification)
   end
 end

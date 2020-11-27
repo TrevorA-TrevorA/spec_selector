@@ -26,7 +26,7 @@ module Selector
       return examples if @map[item.metadata[:block]] == examples
 
       @map[item.metadata[:block]].each do |d|
-        examples += d.examples unless example?(d)
+        examples += fetch_examples(d)
       end
 
       examples

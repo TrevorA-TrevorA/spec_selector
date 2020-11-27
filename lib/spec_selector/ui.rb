@@ -13,7 +13,6 @@ module Selector
     end
 
     def selector
-      clear_frame
       @list ||= @active_map[:top_level]
       @selected ||= @list.first
       display_list
@@ -114,14 +113,8 @@ module Selector
 
     def user_input
       input = $stdin.getch
-      return input unless input == "\e"
-
-      begin
-        input << $stdin.read_nonblock(2)
-      rescue IO::EAGAINWaitReadable
-        nil
-      end
-
+      return input unless IO.select([$stdin], nil, nil, 0.000001)
+      input << $stdin.read_nonblock(2)
       input
     end
   end

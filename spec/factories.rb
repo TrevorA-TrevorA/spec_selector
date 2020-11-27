@@ -53,8 +53,8 @@ FactoryBot.define do
 
   factory :example, class: 'TestObjects::Example' do
     execution_result { build(:execution_result) }
-    description { 'passing example' }
-    metadata { nil }
+    description { 'passed' }
+    metadata { {} }
   end
 
   factory :example_group, class: 'TestObjects::ExampleGroup' do
