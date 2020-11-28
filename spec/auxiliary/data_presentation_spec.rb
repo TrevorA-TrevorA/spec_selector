@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-describe Selector::DataPresentation do
-  include_context 'shared objects'
+describe Auxiliary::DataPresentation do
+  include_context 'shared'
 
   let(:spec_selector) { SpecSelector.new(StringIO.new) }
   let(:output) { spec_selector.ivar(:@output).string }
@@ -39,7 +39,7 @@ describe Selector::DataPresentation do
     it 'calls #print_messages' do
       expect(output).to match(/[some message]/)
     end
-    
+
     it 'passes notification to #errors_summary' do
       expect(output).to match(/[2 errors occurred outside of examples]/)
     end
@@ -305,7 +305,7 @@ describe Selector::DataPresentation do
       let(:notification) do
         build(:failed_example_notification, example: failed_example)
       end
-      
+
       it 'returns failure summary of selected example' do
         summary_settings(failed_example)
         expect(spec_selector.example_list).to include(notification)

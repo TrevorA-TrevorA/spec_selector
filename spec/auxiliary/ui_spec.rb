@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-describe Selector::UI do
-  include_context 'shared objects'
+describe Auxiliary::UI do
+  include_context 'shared'
 
   let(:spec_selector) { SpecSelector.new(StringIO.new) }
   let(:output) { spec_selector.ivar(:@output).string }

@@ -1,11 +1,26 @@
 # frozen_string_literal: true
 
-module Selector
+module Auxiliary
   # The DataPresentation module contains methods used to render mapped data.
   module DataPresentation
     def test_data_summary
       status_count
       print_summary
+    end
+
+    # If an exception is raised before an instance of SpecSelector is
+    # initialized (for instance, a TypeError raised due to a configuration
+    # problem), the MessageNotification will be sent to the registered
+    # default formatter instead and will not be accessable to SpecSelector. 
+    # In such a case,the formatted error information is printed immediately 
+    # in the manner #determined by the default formatter. This method simply 
+    # checks for a condition caused by that situation and leaves the error 
+    # information displayed until the user exits.
+    def errors_before_formatter_initialization
+      if @outside_errors_count.positive? && @messages == ['No examples found.']
+        empty_line
+        exit_only
+      end
     end
 
     def print_errors(notification)

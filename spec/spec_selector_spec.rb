@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe SpecSelector do
-  include_context 'shared objects'
+  include_context 'shared'
 
   let(:spec_selector) { described_class.new(StringIO.new) }
 
@@ -122,7 +122,7 @@ describe SpecSelector do
 
     context 'when errors outside of examples have occurred' do
       let(:notification) do
-         build(:summary_notification, errors_outside_of_examples_count: 2)
+        build(:summary_notification, errors_outside_of_examples_count: 2)
       end
 
       it 'passes notification to #print_errors' do
@@ -153,7 +153,7 @@ describe SpecSelector do
         allow(spec_selector).to receive(:examples_summary).and_call_original
         spec_selector.dump_summary(notification)
         expect(spec_selector).to have_received(:examples_summary)
-        .with(notification)
+          .with(notification)
       end
     end
   end

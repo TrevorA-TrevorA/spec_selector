@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Selector
+module Auxiliary
   # The DataMap module contains methods used to build a hash map of nested
   # lists, which can be rendered in their traversable form through the
   # DataPresentation methods.

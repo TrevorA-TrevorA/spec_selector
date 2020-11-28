@@ -19,17 +19,17 @@ module TestObjects
   end
 
   class SummaryNotification < RSN::SummaryNotification
-    attr_accessor :example_count, 
-                  :duration, 
-                  :load_time, 
+    attr_accessor :example_count,
+                  :duration,
+                  :load_time,
                   :errors_outside_of_example_count
-                  :examples
+    :examples
   end
 
   class SkippedExampleNotification < RSN::SkippedExampleNotification
     attr_accessor :example
 
-    def fully_formatted(n = 1)
+    def fully_formatted(_n)
       'pending example'
     end
   end
@@ -39,8 +39,8 @@ module TestObjects
 
     def initialize
     end
-    
-    def fully_formatted(n = 1)
+
+    def fully_formatted(_n)
       'failed example'
     end
   end
@@ -76,12 +76,12 @@ FactoryBot.define do
     errors_outside_of_examples_count { 0 }
   end
 
-  factory :skipped_example_notification, 
+  factory :skipped_example_notification,
     class: 'TestObjects::SkippedExampleNotification' do
-      example
+    example
   end
 
-  factory :failed_example_notification, 
+  factory :failed_example_notification,
     class: 'TestObjects::FailedExampleNotification' do
       example
     end

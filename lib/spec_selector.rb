@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-require 'pry'
-
 require 'rspec/core'
 require 'io/console'
 require 'byebug'
@@ -16,14 +14,14 @@ require_relative 'spec_selector/instructions'
 # The SpecSelector instance receives example execution data from the reporter
 # and arranges it into a formatted, traversable map.
 class SpecSelector
-  include Selector::UI
-  include Selector::Terminal
-  include Selector::Format
-  include Selector::DataPresentation
-  include Selector::Helpers
-  include Selector::DataMap
-  include Selector::Initialize
-  include Selector::Instructions
+  include Auxiliary::UI
+  include Auxiliary::Terminal
+  include Auxiliary::Format
+  include Auxiliary::DataPresentation
+  include Auxiliary::Helpers
+  include Auxiliary::DataMap
+  include Auxiliary::Initialize
+  include Auxiliary::Instructions
 
   RSpec::Core::Formatters.register self,
                                    :message,
@@ -73,8 +71,9 @@ class SpecSelector
   end
 
   def dump_summary(notification)
-    error_count = notification.errors_outside_of_examples_count
-    print_errors(notification) if error_count.positive?
+    @outside_errors_count = notification.errors_outside_of_examples_count
+    errors_before_formatter_initialization
+    print_errors(notification) if @outside_errors_count.positive?
     messages_only if @map.empty?
     examples_summary(notification)
   end
