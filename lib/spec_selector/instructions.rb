@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Auxiliary
+module SpecSelectorUtil
   # The Instructions module contains methods used to render the
   # appropriate user instructions.
   module Instructions

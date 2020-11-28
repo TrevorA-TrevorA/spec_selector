@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Auxiliary::UI do
+describe SpecSelectorUtil::UI do
   include_context 'shared'
 
   let(:spec_selector) { SpecSelector.new(StringIO.new) }

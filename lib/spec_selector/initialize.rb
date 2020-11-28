@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Auxiliary
+module SpecSelectorUtil
   # The Initialize module contains methods that initialize specific sets of
   # instance variables for the SpecSelector instance.
   module Initialize

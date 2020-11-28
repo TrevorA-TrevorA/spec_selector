@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Auxiliary
+module SpecSelectorUtil
   # The Terminal module contains methods concerned with terminal display
   # function.
   module Terminal

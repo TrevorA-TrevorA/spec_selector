@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Auxiliary
+module SpecSelectorUtil
   # The DataPresentation module contains methods used to render mapped data.
   module DataPresentation
     def test_data_summary

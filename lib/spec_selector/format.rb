@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Auxiliary
+module SpecSelectorUtil
   # The Format module contains methods used for simple text formatting, as well
   # as methods that determine how specific list items will be formatted.
   module Format

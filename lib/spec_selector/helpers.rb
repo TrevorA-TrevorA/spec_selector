@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Auxiliary
+module SpecSelectorUtil
   # The Helpers module contains helper methods shared across multiple
   # concerns.
   module Helpers

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Auxiliary::Initialize do
+describe SpecSelectorUtil::Initialize do
   # the subject calls #initialze_all during initialization, which calls
   # all of the other methods in this block.
   subject(:spec_selector) { SpecSelector.new(StringIO.new) }

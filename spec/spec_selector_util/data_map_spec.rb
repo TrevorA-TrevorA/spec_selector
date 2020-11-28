@@ -1,4 +1,4 @@
-describe Auxiliary::DataMap do
+describe SpecSelectorUtil::DataMap do
   subject(:spec_selector) { SpecSelector.new(StringIO.new) }
 
   let(:example_group) do

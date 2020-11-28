@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Auxiliary
+module SpecSelectorUtil
   # The UI module contains methods used to bind and process user input.
   module UI
     DIRECTION_KEYS = ["\e[A", "\e[B"].freeze

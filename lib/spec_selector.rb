@@ -14,14 +14,14 @@ require_relative 'spec_selector/instructions'
 # The SpecSelector instance receives example execution data from the reporter
 # and arranges it into a formatted, traversable map.
 class SpecSelector
-  include Auxiliary::UI
-  include Auxiliary::Terminal
-  include Auxiliary::Format
-  include Auxiliary::DataPresentation
-  include Auxiliary::Helpers
-  include Auxiliary::DataMap
-  include Auxiliary::Initialize
-  include Auxiliary::Instructions
+  include SpecSelectorUtil::UI
+  include SpecSelectorUtil::Terminal
+  include SpecSelectorUtil::Format
+  include SpecSelectorUtil::DataPresentation
+  include SpecSelectorUtil::Helpers
+  include SpecSelectorUtil::DataMap
+  include SpecSelectorUtil::Initialize
+  include SpecSelectorUtil::Instructions
 
   RSpec::Core::Formatters.register self,
                                    :message,
