@@ -22,8 +22,9 @@ module SpecSelectorUtil
       return [item] if example?(item)
 
       examples = item.examples
-
       return examples if @map[item.metadata[:block]] == examples
+
+      examples.reject! { |ex| ex.execution_result.status.nil? }
 
       @map[item.metadata[:block]].each do |d|
         examples += fetch_examples(d)

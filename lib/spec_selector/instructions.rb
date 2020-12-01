@@ -44,6 +44,7 @@ module SpecSelectorUtil
       top_fail_text unless @failed.empty?
       @output.puts 'Press ↑ or ↓ to navigate list' if @list.count > 1
       @output.puts 'Press [enter] to select'
+      @output.puts 'Press R to rerun examples'
     end
 
     def top_fail_text

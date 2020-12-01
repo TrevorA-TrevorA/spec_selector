@@ -4,7 +4,7 @@ require 'spec_selector'
 require 'factory_bot'
 require 'stringio'
 require 'timeout'
-require 'shared_context'
+require 'shared'
 
 RCN = RSpec::Core::Notifications
 EXAMPLE_STUBS = { description: 'description',

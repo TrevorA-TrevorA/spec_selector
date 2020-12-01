@@ -58,7 +58,7 @@ describe SpecSelectorUtil::UI do
   describe '#navigate', break_loop: true do
     context 'when @selected is included in @list' do
       it 'sets @selector_index to index position of @selected in @list' do
-        set_ivars(:@selected => fail_group, :@list => mixed_map[:top_level])
+        ivars_set(:@selected => fail_group, :@list => mixed_map[:top_level])
         spec_selector.navigate
         expect(ivar(:@selector_index)).to eq(1)
       end
@@ -66,7 +66,7 @@ describe SpecSelectorUtil::UI do
 
     context 'when @selected is not included in @list' do
       it 'sets @selected to zero' do
-        set_ivars(:@selected => failed_example, :@list => mixed_map[:top_level])
+        ivars_set(:@selected => failed_example, :@list => mixed_map[:top_level])
         spec_selector.navigate
         expect(ivar(:selector_index)).to eq(0)
       end
@@ -139,8 +139,8 @@ describe SpecSelectorUtil::UI do
 
   describe '#top_level_list' do
     before do
-      set_ivars(:@active_map => mixed_map, :@list => [passing_example])
-      set_ivars(:@selected => passing_example, :@example_display => true)
+      ivars_set(:@active_map => mixed_map, :@list => [passing_example])
+      ivars_set(:@selected => passing_example, :@example_display => true)
       allow_methods(:selector)
       spec_selector.top_level_list
     end
@@ -174,7 +174,7 @@ describe SpecSelectorUtil::UI do
 
     context 'when @example_display is false' do
       it 'does not return immediately' do
-        set_ivars(:@selected => fail_group, :@example_display => false)
+        ivars_set(:@selected => fail_group, :@example_display => false)
         allow_methods(:selector, :example?)
         spec_selector.select_item
         expect(spec_selector).to have_received(:example?)
@@ -183,7 +183,7 @@ describe SpecSelectorUtil::UI do
 
     context 'when @selected is an example' do
       it 'calls #display_example' do
-        set_ivars(:@selected => failed_example, :@list => [failed_example])
+        ivars_set(:@selected => failed_example, :@list => [failed_example])
         allow_methods(:display_example, :selector)
         spec_selector.select_item
         expect(spec_selector).to have_received(:display_example)
@@ -192,7 +192,7 @@ describe SpecSelectorUtil::UI do
 
     context 'when @selected is not an example' do
       before do
-        set_ivars(:@active_map => mixed_map, :@selected => pass_group)
+        ivars_set(:@active_map => mixed_map, :@selected => pass_group)
         allow_methods(:selector)
         spec_selector.select_item
       end
@@ -272,7 +272,7 @@ describe SpecSelectorUtil::UI do
           :@selected => fail_group.examples.first,
           :@example_display => true
         }
-        set_ivars(attrs)
+        ivars_set(attrs)
         allow(ivar(:@selected)).to receive(:example_group) { fail_group }
         spec_selector.parent_list
       end
@@ -288,8 +288,8 @@ describe SpecSelectorUtil::UI do
 
     context 'when @example_display is already false' do
       before do
-        set_ivars(:@selected => fail_subgroup, :@active_map => deep_map)
-        set_ivars(:@groups => {
+        ivars_set(:@selected => fail_subgroup, :@active_map => deep_map)
+        ivars_set(:@groups => {
                     fail_parent_group.metadata[:block] => fail_parent_group
                   })
         spec_selector.parent_list
@@ -311,7 +311,7 @@ describe SpecSelectorUtil::UI do
     end
 
     before do
-      set_ivars(:@list => list, :@selector_index => 2)
+      ivars_set(:@list => list, :@selector_index => 2)
       allow_methods(:display_list, :display_example)
     end
 

@@ -183,7 +183,7 @@ describe SpecSelectorUtil::DataPresentation do
     before do
       allow_methods(:display_list, :navigate)
       map, list, group = [mixed_map, mixed_list, pass_group]
-      set_ivars(:@map => map, :@list => list, :@selected => group)
+      ivars_set(:@map => map, :@list => list, :@selected => group)
     end
 
     context 'when displayed list includes all-passing example groups' do
@@ -226,7 +226,7 @@ describe SpecSelectorUtil::DataPresentation do
 
     context 'when all examples have passed' do
       it 'displays message indicating that all examples have passed' do
-        set_ivars(:@map => all_passing_map, :@list => [pass_group, pass_group])
+        ivars_set(:@map => all_passing_map, :@list => [pass_group, pass_group])
         allow(spec_selector).to receive(:all_passing?).and_return(true)
         spec_selector.display_list
         expect(output).to match(/ALL EXAMPLES PASSED/)
@@ -235,7 +235,7 @@ describe SpecSelectorUtil::DataPresentation do
 
     context 'when not all examples have passed' do
       it 'does not display message indicating that all examples have passed' do
-        set_ivars(:@map => mixed_map, :@list => mixed_list)
+        ivars_set(:@map => mixed_map, :@list => mixed_list)
         allow(spec_selector).to receive(:all_passing?).and_return(false)
         spec_selector.display_list
         expect(output).not_to match(/ALL EXAMPLES PASSED/)
@@ -245,7 +245,7 @@ describe SpecSelectorUtil::DataPresentation do
     context 'when user has pressed I to view instructions' do
       it 'displays full instructions' do
         map, list = [mixed_map, mixed_list]
-        set_ivars(:@map => map, :@list => list, :@instructions => true)
+        ivars_set(:@map => map, :@list => list, :@instructions => true)
         spec_selector.display_list
         expect_full_instructions_to_be_displayed
       end
@@ -253,14 +253,14 @@ describe SpecSelectorUtil::DataPresentation do
 
     context 'when user has not pressed I to view full instructions' do
       it 'displays instruction to press I to view instructions' do
-        set_ivars(:@map => mixed_map, :@list => mixed_list)
+        ivars_set(:@map => mixed_map, :@list => mixed_list)
         spec_selector.display_list
         expect(output).to match(/Press I to view instructions/)
       end
     end
 
     it 'displays list of example groups or examples in current level' do
-      set_ivars(:@map => mixed_map, :@list => mixed_list)
+      ivars_set(:@map => mixed_map, :@list => mixed_list)
       spec_selector.display_list
       expect(output).to match(/[passing example group]/)
       expect(output).to match(/[non-passing example group]/)
@@ -288,7 +288,7 @@ describe SpecSelectorUtil::DataPresentation do
 
     context 'when example is passing' do
       it 'displays text indicating the example passed' do
-        set_ivars(:@selected => passing_example, :@passed => [passing_example])
+        ivars_set(:@selected => passing_example, :@passed => [passing_example])
         spec_selector.display_example
         expect(output).to match(/[PASSED]/)
       end
@@ -327,7 +327,7 @@ describe SpecSelectorUtil::DataPresentation do
   describe '#toggle_instructions' do
     before do
       allow_methods(:test_data_summary, :navigate)
-      set_ivars(:@map => mixed_map, :@list => mixed_list)
+      ivars_set(:@map => mixed_map, :@list => mixed_list)
     end
 
     context 'when full instructions are not currently displayed' do

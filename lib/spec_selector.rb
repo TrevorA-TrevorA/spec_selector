@@ -10,6 +10,7 @@ require_relative 'spec_selector/helpers'
 require_relative 'spec_selector/data_map'
 require_relative 'spec_selector/initialize'
 require_relative 'spec_selector/instructions'
+require_relative 'spec_selector/state'
 
 # The SpecSelector instance receives example execution data from the reporter
 # and arranges it into a formatted, traversable map.
@@ -22,6 +23,7 @@ class SpecSelector
   include SpecSelectorUtil::DataMap
   include SpecSelectorUtil::Initialize
   include SpecSelectorUtil::Instructions
+  include SpecSelectorUtil::State
 
   RSpec::Core::Formatters.register self,
                                    :message,
@@ -43,13 +45,14 @@ class SpecSelector
 
   def example_group_started(notification)
     group = notification.group
-    map(group)
+    map_group(group)
     @groups[group.metadata[:block]] = group
   end
 
   def example_passed(notification)
     clear_frame
     @passed << notification.example
+    map_example(notification.example)
     @pass_count += 1
     status_count
   end
@@ -58,6 +61,7 @@ class SpecSelector
     clear_frame
     @pending_summaries[notification.example] = notification
     @pending << notification.example
+    map_example(notification.example)
     @pending_count += 1
     status_count
   end
@@ -66,6 +70,7 @@ class SpecSelector
     clear_frame
     @failure_summaries[notification.example] = notification
     @failed << notification.example
+    map_example(notification.example)
     @fail_count += 1
     status_count
   end

@@ -59,7 +59,7 @@ RSpec.shared_context 'shared' do
     end
   end
 
-  def set_ivars(ivar_hash)
+  def ivars_set(ivar_hash)
     ivar_hash.each do |ivar, value|
       spec_selector.ivar_set(ivar, value)
     end
@@ -89,7 +89,7 @@ RSpec.shared_context 'shared' do
       ivar = :@pending
     end
 
-    set_ivars(:@selected => example, ivar => [example])
+    ivars_set(:@selected => example, ivar => [example])
     notification = build(notification_type, example: example)
     spec_selector.ivar(summary_list)[example] = notification
   end

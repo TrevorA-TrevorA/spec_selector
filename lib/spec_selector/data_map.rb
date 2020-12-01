@@ -5,14 +5,10 @@ module SpecSelectorUtil
   # lists, which can be rendered in their traversable form through the
   # DataPresentation methods.
   module DataMap
-    def map(group)
-      map_group(group)
-      map_examples(group) unless group.examples.empty?
-    end
-
     def top_level_push(group)
       @map[:top_level] ||= []
       @map[:top_level] << group
+      @map[group.metadata[:block]] ||= []
     end
 
     def parent_data(data)
@@ -30,12 +26,13 @@ module SpecSelectorUtil
         parent = group.metadata[:parent_example_group][:block]
         @map[parent] ||= []
         @map[parent] << group
+        @map[group.metadata[:block]] ||= []
       end
     end
 
-    def map_examples(group)
-      @map[group.metadata[:block]] ||= []
-      @map[group.metadata[:block]] += group.examples
+    def map_example(example)
+      group = example.example_group
+      @map[group.metadata[:block]] << example
     end
   end
 end
