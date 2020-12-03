@@ -37,6 +37,17 @@ module SpecSelectorUtil
       @selector_index = 0
     end
 
+    def get_descriptions
+      path = File.dirname(__FILE__)
+
+      if File.exist?("#{path}/inclusion_filter/inclusion.json")
+        included = File.open("#{path}/inclusion_filter/inclusion.json")
+        @filtered_descriptions = JSON.load(included)
+      else
+        @filtered_descriptions = []
+      end
+    end
+
     def initialize_all
       @messages = []
       init_example_store
@@ -45,7 +56,10 @@ module SpecSelectorUtil
       init_pass_inclusion
       init_map
       init_selector
+      get_descriptions
+      @inclusion_filter = []
       @instructions = false
+      @removed = []
     end
   end
 end

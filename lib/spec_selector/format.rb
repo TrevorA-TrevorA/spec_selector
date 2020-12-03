@@ -13,8 +13,10 @@ module SpecSelectorUtil
     }.freeze
 
     ESCAPE_CODES.each do |sym, num|
-      define_method(sym) do |text|
-        @output.puts "\e[#{num}m#{text}\e[0m"
+      define_method(sym) do |text, included = false|
+        formatted = "\e[#{num}m#{text}\e[0m"
+        formatted = included ? formatted + ' √' : formatted 
+        @output.puts formatted
       end
     end
 
@@ -36,13 +38,14 @@ module SpecSelectorUtil
     def format_list_item(item)
       description = lineage(item.metadata)
       data = example?(item) ? [item] : fetch_examples(item)
+      included = item.metadata[:include]
 
       if @selected == item
-        highlight(description)
+        highlight(description, included)
       else
-        green(description) if all_passed?(data)
-        yellow(description) if any_pending?(data) && !any_failed?(data)
-        red(description) if any_failed?(data)
+        green(description, included) if all_passed?(data)
+        yellow(description, included) if any_pending?(data) && !any_failed?(data)
+        red(description, included) if any_failed?(data)
       end
     end
 
@@ -58,8 +61,9 @@ module SpecSelectorUtil
       red("FAIL: #{@fail_count}")
     end
 
-    def highlight(text)
-      @output.puts "\e[1m\e[7m#{text}\e[27m\e[22m"
+    def highlight(text, included = false)
+      text += ' √' if included
+      @output.puts "\e[1;7m#{text}\e[27;22m"
     end
 
     def lineage(data)

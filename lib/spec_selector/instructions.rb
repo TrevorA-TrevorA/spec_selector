@@ -45,6 +45,7 @@ module SpecSelectorUtil
       @output.puts 'Press ↑ or ↓ to navigate list' if @list.count > 1
       @output.puts 'Press [enter] to select'
       @output.puts 'Press R to rerun examples'
+      @output.puts 'Press C to clear filter' if @inclusion_filter.size.positive?
     end
 
     def top_fail_text
@@ -53,6 +54,8 @@ module SpecSelectorUtil
 
     def example_summary_instructions
       i_for_instructions
+      @output.puts 'Press M to remove from filter' if @selected.metadata[:include]
+      @output.puts 'Press C to clear filter' unless @inclusion_filter.empty?
       top_fail_text unless @failed.empty? || @selected == @failed.first
       back_instructions
       q_to_exit

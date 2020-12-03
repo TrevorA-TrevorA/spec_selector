@@ -2,6 +2,7 @@
 require 'rspec/core'
 require 'io/console'
 require 'byebug'
+require 'json'
 require_relative 'spec_selector/terminal'
 require_relative 'spec_selector/UI'
 require_relative 'spec_selector/format'
@@ -47,12 +48,14 @@ class SpecSelector
     group = notification.group
     map_group(group)
     @groups[group.metadata[:block]] = group
+    check_inclusion_status(group)
   end
 
   def example_passed(notification)
     clear_frame
     @passed << notification.example
     map_example(notification.example)
+    check_inclusion_status(notification.example)
     @pass_count += 1
     status_count
   end
@@ -62,6 +65,7 @@ class SpecSelector
     @pending_summaries[notification.example] = notification
     @pending << notification.example
     map_example(notification.example)
+    check_inclusion_status(notification.example)
     @pending_count += 1
     status_count
   end
@@ -71,6 +75,7 @@ class SpecSelector
     @failure_summaries[notification.example] = notification
     @failed << notification.example
     map_example(notification.example)
+    check_inclusion_status(notification.example)
     @fail_count += 1
     status_count
   end

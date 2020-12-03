@@ -30,14 +30,17 @@ module SpecSelectorUtil
     end
 
     def print_messages
-      @messages.each { |message| italicize message }
+      @messages.each do |message|
+        next if message.include?('Run options: include {:full_description=>')
+        italicize(message)
+      end
       empty_line
     end
 
     def examples_summary(notification)
       @summary_notification = notification
       status_summary(notification)
-      @list = @map[:top_level]
+      @list = @inclusion_filter.empty? ? @map[:top_level] : @inclusion_filter
       selector
     end
 
@@ -114,6 +117,7 @@ module SpecSelectorUtil
       status = @selected.execution_result.status
       @list, data = example_list
       @instructions ? example_summary_instructions : i_for_instructions
+      @output.puts "Added to filter √" if @selected.metadata[:include]
       @selector_index = @list.index(@selected)
       view_other_examples(status) if @list.count > 1 && @instructions
       format_example(status, data)
