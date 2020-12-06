@@ -20,6 +20,15 @@ module SpecSelectorUtil
       @example_display ? display_example : selector
     end
 
+    def run_only_fails
+      @failed.each do |example|
+        example.metadata[:include] = true
+        @inclusion_filter << example
+      end
+
+      rerun
+    end
+
     def filter_remove
       @inclusion_filter -= [@selected]
       @removed << @selected

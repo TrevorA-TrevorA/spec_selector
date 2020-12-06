@@ -32,7 +32,7 @@ module SpecSelectorUtil
 
     def filter_pass_instructions
       verb = @exclude_passing ? 'include' : 'exclude'
-      @output.puts "Press F to #{verb} passing examples"
+      @output.puts "Press P to #{verb} passing examples"
     end
 
     def i_for_instructions
@@ -45,6 +45,8 @@ module SpecSelectorUtil
       @output.puts 'Press ↑ or ↓ to navigate list' if @list.count > 1
       @output.puts 'Press [enter] to select'
       @output.puts 'Press R to rerun examples'
+      @output.puts 'Press F to rerun only failed results'
+      @output.puts 'Press M to include or remove item from run filter'
       @output.puts 'Press C to clear filter' if @inclusion_filter.size.positive?
     end
 

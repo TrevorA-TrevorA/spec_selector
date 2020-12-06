@@ -5,7 +5,7 @@ module SpecSelectorUtil
   module UI
     DIRECTION_KEYS = ["\e[A", "\e[B"].freeze
     TREE_NAVIGATION_KEYS = ["\r", "\x7F", "\e"].freeze
-    OPTION_KEYS = [/t/i, /f/i, /q/i, /i/i, /r/i, /m/i, /c/i].freeze
+    OPTION_KEYS = [/t/i, /f/i, /p/i, /q/i, /i/i, /r/i, /m/i, /c/i].freeze
 
     def exit_only
       q_to_exit
@@ -103,8 +103,10 @@ module SpecSelectorUtil
       case input
       when /t/i
         top_fail
-      when /f/i
+      when /p/i
         passing_filter
+      when /f/i
+        run_only_fails
       when /q/i
         quit
       when /i/i

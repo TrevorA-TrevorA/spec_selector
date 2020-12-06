@@ -40,7 +40,13 @@ module SpecSelectorUtil
     def examples_summary(notification)
       @summary_notification = notification
       status_summary(notification)
-      @list = @inclusion_filter.empty? ? @map[:top_level] : @inclusion_filter
+
+      if @inclusion_filter.empty? || @inclusion_filter.count > 20
+        @list = @map[:top_level]
+      else
+        @list = @inclusion_filter
+      end
+      
       selector
     end
 
