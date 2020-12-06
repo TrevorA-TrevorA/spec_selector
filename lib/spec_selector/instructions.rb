@@ -4,11 +4,10 @@ module SpecSelectorUtil
   # The Instructions module contains methods used to render the
   # appropriate user instructions.
   module Instructions
-    def full_instructions
+    def basic_instructions
       i_for_instructions
-      filter_pass_instructions unless all_passing? || none_passing?
-      select_instructions
       back_instructions unless top_level?
+      up_down_select_instructions
       q_to_exit
     end
 
@@ -17,8 +16,17 @@ module SpecSelectorUtil
     end
 
     def back_instructions
-      @output.puts 'Press [backspace] to return to parent group list'
-      @output.puts 'Press [escape] to return to top-level group list'
+      back_inst = 'Press [back] to return to parent group list'
+      escape_inst = 'Press [escape] to return to top-level group list'
+
+      [back_inst, escape_inst].each do |inst|
+        if @instructions
+          bold(inst)
+          empty_line
+        else
+          @output.puts inst
+        end
+      end
     end
 
     def q_to_exit
@@ -31,31 +39,71 @@ module SpecSelectorUtil
     end
 
     def filter_pass_instructions
-      verb = @exclude_passing ? 'include' : 'exclude'
-      @output.puts "Press P to #{verb} passing examples"
+      verb = @exclude_passing ? 'show' : 'hide'
+      bold "Press P to #{verb} passing examples in current set"
     end
 
     def i_for_instructions
-      verb = @instructions ? 'hide' : 'view'
-      @output.puts "Press I to #{verb} instructions"
+      @output.puts "Press I to view full instructions"
     end
 
-    def select_instructions
-      top_fail_text unless @failed.empty?
-      @output.puts 'Press ↑ or ↓ to navigate list' if @list.count > 1
-      @output.puts 'Press [enter] to select'
-      @output.puts 'Press R to rerun examples'
-      @output.puts 'Press F to rerun only failed results'
-      @output.puts 'Press M to include or remove item from run filter'
+    def up_down_select_instructions
+      up_down_inst = 'Press ↑ or ↓ to navigate list' if @list.count > 1
+      select_inst = 'press [enter] to select'
 
-      if @inclusion_filter.size.positive?
-        @output.puts 'Press C to clear filter' 
-        @output.puts 'Press A to clear filter and rerun all examples'
+      [up_down_inst, select_inst].each do |inst|
+        if @instructions
+          bold(inst)
+          empty_line
+        else
+          @output.puts inst
+        end
       end
     end
 
+    def view_instructions_page
+      @instructions = true
+      open_alt_buffer
+
+      unless @failed.empty? || @selected == @failed.first
+        top_fail_text
+        empty_line
+      end
+
+      unless all_passing? || none_passing?
+        filter_pass_instructions
+        empty_line
+      end
+      
+      up_down_select_instructions
+      back_instructions unless top_level?
+      bold('Press R to rerun examples with filter selection')
+      empty_line
+      bold('Press F to rerun only failed results')
+      empty_line
+      bold('Press M to include or remove selected item from run filter')
+      empty_line
+
+      if @inclusion_filter.size.positive?
+        bold('Press C to clear filter')
+        empty_line
+        bold('Press A to clear filter and rerun all examples')
+        empty_line
+      end
+
+      bold('Press I to exit instructions')
+      empty_line
+      bold('Press Q to quit')
+      navigate
+    end
+
     def top_fail_text
-      @output.puts 'Press T to view top failed example'
+      bold 'Press T to view top failed example'
+    end
+
+    def exit_instruction_page
+      @instructions = false
+      system("tput rmcup")
     end
 
     def example_summary_instructions

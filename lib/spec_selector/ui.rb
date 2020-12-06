@@ -32,6 +32,7 @@ module SpecSelectorUtil
     end
 
     def quit
+      close_alt_buffer if @instructions
       clear_frame
       delete_filter_data
       reveal_cursor
@@ -39,6 +40,7 @@ module SpecSelectorUtil
     end
 
     def top_level_list
+      exit_instruction_page if @instructions
       @example_display = false
       @selected = nil
       @list = @active_map[:top_level]
@@ -54,7 +56,13 @@ module SpecSelectorUtil
       selector
     end
 
+    def exit_instruction_page_only
+      exit_instruction_page
+      @example_display ? display_example : selector
+    end
+
     def top_fail
+      exit_instruction_page if @instructions
       return if @failed.empty?
 
       @selected = @failed.first
@@ -82,6 +90,7 @@ module SpecSelectorUtil
     end
 
     def direction_keys(input)
+      exit_instruction_page if @instructions
       dir = input == "\e[A" ? -1 : 1
       @selector_index = (@selector_index + dir) % @list.length
       @selected = @list[@selector_index]
@@ -89,6 +98,8 @@ module SpecSelectorUtil
     end
 
     def tree_nav_keys(input)
+      exit_instruction_page_only if @instructions && input != "\e"
+      
       case input
       when "\r"
         select_item
@@ -100,6 +111,7 @@ module SpecSelectorUtil
     end
 
     def option_keys(input)
+
       case input
       when /t/i
         top_fail
@@ -110,14 +122,16 @@ module SpecSelectorUtil
       when /q/i
         quit
       when /i/i
-        toggle_instructions
+        exit_instruction_page_only if @instructions
+        view_instructions_page
       when /r/i
         rerun
-      when /a/i
+      when /^a$/i
         rerun_all
       when /m/i
+        return if @instructions
         @selected.metadata[:include] ? filter_remove : filter_include
-      when /c/i
+      when /^c$/i
         clear_filter
       end
     end

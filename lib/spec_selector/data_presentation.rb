@@ -46,7 +46,7 @@ module SpecSelectorUtil
       else
         @list = @inclusion_filter
       end
-      
+
       selector
     end
 
@@ -87,9 +87,10 @@ module SpecSelectorUtil
 
     def passing_filter
       return if all_passing?
-
+      
       @exclude_passing ? include_passing! : exclude_passing!
-      return if @example_display && @list != @passed
+      return if @example_display && @list != @passed && !@instructions
+      exit_instruction_page if @instructions
       p_data = parent_data(@selected.metadata)
       key = p_data ? p_data[:block] : :top_level
       new_list = @active_map[key]
@@ -111,7 +112,7 @@ module SpecSelectorUtil
       test_data_summary
       print_messages unless @messages.empty?
       all_passed_message if all_passing?
-      @instructions ? full_instructions : i_for_instructions
+      basic_instructions
       empty_line
       @list.each { |item| format_list_item(item) }
     end
@@ -122,7 +123,7 @@ module SpecSelectorUtil
       test_data_summary
       status = @selected.execution_result.status
       @list, data = example_list
-      @instructions ? example_summary_instructions : i_for_instructions
+      example_summary_instructions
       @output.puts "Added to filter √" if @selected.metadata[:include]
       @selector_index = @list.index(@selected)
       view_other_examples(status) if @list.count > 1 && @instructions
@@ -140,11 +141,6 @@ module SpecSelectorUtil
       data = @pending_summaries[@selected] if status == :pending
 
       [result_list, data]
-    end
-
-    def toggle_instructions
-      @instructions = @instructions ? false : true
-      @example_display ? display_example : selector
     end
 
     def messages_only

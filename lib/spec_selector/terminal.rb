@@ -18,6 +18,18 @@ module SpecSelectorUtil
       system("printf '\e[?25h'")
     end
 
+    def term_height
+      $stdout.winsize[0]
+    end
+
+    def open_alt_buffer
+      system("tput smcup")
+    end
+    
+    def close_alt_buffer
+      system("tput rmcup")
+    end
+
     def term_width
       $stdout.winsize[1]
     end

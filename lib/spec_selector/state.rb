@@ -1,6 +1,7 @@
 module SpecSelectorUtil
    module State
     def rerun
+      close_alt_buffer if @instructions
       clear_frame
       persist_inclusion_filter
       italicize('running examples...')
@@ -97,6 +98,7 @@ module SpecSelectorUtil
       @inclusion_filter.each { |item| item.metadata[:include] = nil }
       @removed = @inclusion_filter
       @inclusion_filter = []
+      return if @instructions
       @example_display ? display_example : top_level_list
     end
 
