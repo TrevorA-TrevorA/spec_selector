@@ -5,13 +5,14 @@ module SpecSelectorUtil
       persist_inclusion_filter
       italicize('running examples...')
       working_dir = Dir.pwd
-      process_id = Process.pid
-      args = ARGV - @filtered_descriptions - ['-E'] - @removed
+      pid = Process.pid
+      args = ARGV - @last_run_filtered_descriptions - ['-e'] - @removed
       args = args.join(" ")
       included = prepare_description_arguments
+      marker = @filtered_item_descriptions.count
       rerun = File.dirname(__FILE__) + '/scripts/rerun.sh'
       Signal.trap('TERM') { clear_frame; exit }
-      system("#{rerun} #{process_id} #{working_dir} #{$0} #{args} #{included}")
+      system("#{rerun} #{pid} #{working_dir} #{$0} #{args} #{included} #{marker}")
     end
 
     def filter_include
@@ -29,7 +30,8 @@ module SpecSelectorUtil
 
     def persist_inclusion_filter
       @inclusion_filter.uniq!
-      filter = @inclusion_filter.map(&:description).to_json
+      @filtered_item_descriptions = @inclusion_filter.map(&:description)
+      filter = @filtered_item_descriptions.to_json
       path = File.dirname(__FILE__)
       File.write("#{path}/inclusion_filter/inclusion.json", filter)
     end
@@ -43,16 +45,28 @@ module SpecSelectorUtil
     def prepare_description_arguments
       return if @inclusion_filter.empty?
 
-      filter = @inclusion_filter.map(&:description)
-      filter.each do |d|
-        d.insert(0,"'")
-        d.insert(-1,"'")
-        d.gsub!('[', '\[')
-        d.gsub!(']', '\]')
+      included = @filtered_item_descriptions
+      contains_singles = nil
+
+      included.each do |desc|
+        if desc.include?("'")
+          desc.insert(0, "\"")
+          desc.insert(-1, "\"")
+          contains_singles = desc
+        end
       end
 
-      filter = '-E ' + filter.join(' -E ')
-      filter
+      included -= [contains_singles]
+
+      if included.empty?
+        return contains_singles
+      elsif !contains_singles
+        return "#{included}".gsub("\"", "'")
+      else
+        included = "#{included}".gsub("\"", "'")
+        included[-1] = ", #{contains_singles}]"
+        return included
+      end
     end
 
     def clear_filter
@@ -65,7 +79,7 @@ module SpecSelectorUtil
     end
 
     def check_inclusion_status(item)
-      if @filtered_descriptions.include?(item.description)
+      if @last_run_filtered_descriptions.include?(item.description)
         @inclusion_filter << item
         item.metadata[:include] = true
       end

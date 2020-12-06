@@ -42,9 +42,9 @@ module SpecSelectorUtil
 
       if File.exist?("#{path}/inclusion_filter/inclusion.json")
         included = File.open("#{path}/inclusion_filter/inclusion.json")
-        @filtered_descriptions = JSON.load(included)
+        @last_run_filtered_descriptions = JSON.load(included)
       else
-        @filtered_descriptions = []
+        @last_run_filtered_descriptions = []
       end
     end
 
