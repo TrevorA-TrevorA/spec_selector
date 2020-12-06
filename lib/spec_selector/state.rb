@@ -29,6 +29,13 @@ module SpecSelectorUtil
       rerun
     end
 
+    def rerun_all
+      return if @inclusion_filter.empty?
+
+      @inclusion_filter = []
+      rerun
+    end
+
     def filter_remove
       @inclusion_filter -= [@selected]
       @removed << @selected

@@ -5,7 +5,7 @@ module SpecSelectorUtil
   module UI
     DIRECTION_KEYS = ["\e[A", "\e[B"].freeze
     TREE_NAVIGATION_KEYS = ["\r", "\x7F", "\e"].freeze
-    OPTION_KEYS = [/t/i, /f/i, /p/i, /q/i, /i/i, /r/i, /m/i, /c/i].freeze
+    OPTION_KEYS = [/t/i, /f/i, /p/i, /q/i, /i/i, /r/i, /m/i, /c/i, /a/i].freeze
 
     def exit_only
       q_to_exit
@@ -113,6 +113,8 @@ module SpecSelectorUtil
         toggle_instructions
       when /r/i
         rerun
+      when /a/i
+        rerun_all
       when /m/i
         @selected.metadata[:include] ? filter_remove : filter_include
       when /c/i

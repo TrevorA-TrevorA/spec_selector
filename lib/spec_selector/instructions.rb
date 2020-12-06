@@ -47,7 +47,11 @@ module SpecSelectorUtil
       @output.puts 'Press R to rerun examples'
       @output.puts 'Press F to rerun only failed results'
       @output.puts 'Press M to include or remove item from run filter'
-      @output.puts 'Press C to clear filter' if @inclusion_filter.size.positive?
+
+      if @inclusion_filter.size.positive?
+        @output.puts 'Press C to clear filter' 
+        @output.puts 'Press A to clear filter and rerun all examples'
+      end
     end
 
     def top_fail_text
