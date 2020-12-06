@@ -30,7 +30,7 @@ module SpecSelectorUtil
     end
 
     def rerun_all
-      return if @inclusion_filter.empty?
+      return if @last_run_filtered_descriptions.empty?
 
       @inclusion_filter = []
       rerun
