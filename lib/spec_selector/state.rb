@@ -6,8 +6,7 @@ module SpecSelectorUtil
       italicize('running examples...')
       working_dir = Dir.pwd
       pid = Process.pid
-      args = ARGV - @last_run_filtered_descriptions - ['-e'] - @removed
-      args = args.join(" ")
+      args = reset_arguments
       included = prepare_description_arguments
       marker = @filtered_item_descriptions.count
       rerun = File.dirname(__FILE__) + '/scripts/rerun.sh'
@@ -40,6 +39,13 @@ module SpecSelectorUtil
       path = File.dirname(__FILE__)
       filter_file = "#{path}/inclusion_filter/inclusion.json"
       File.delete(filter_file) if File.exist?(filter_file)
+    end
+
+    def reset_arguments
+      old_descriptions = @last_run_filtered_descriptions.map { |d| " -e #{d}" }
+      args = ARGV.join(" ")
+      old_descriptions.each { |d| args.slice!(d) }
+      args
     end
 
     def prepare_description_arguments
