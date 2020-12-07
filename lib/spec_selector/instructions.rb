@@ -6,7 +6,6 @@ module SpecSelectorUtil
   module Instructions
     def basic_instructions
       i_for_instructions
-      back_instructions unless top_level?
       up_down_select_instructions
       q_to_exit
     end
