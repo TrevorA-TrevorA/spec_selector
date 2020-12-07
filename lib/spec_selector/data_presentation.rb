@@ -41,7 +41,7 @@ module SpecSelectorUtil
       @summary_notification = notification
       status_summary(notification)
 
-      if @inclusion_filter.empty? || @inclusion_filter.count > 20
+      if @inclusion_filter.empty? || @inclusion_filter.count > 10
         @list = @map[:top_level]
       else
         @list = @inclusion_filter

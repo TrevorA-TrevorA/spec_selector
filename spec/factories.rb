@@ -4,7 +4,7 @@ module TestObjects
   RSN = RSpec::Core::Notifications
 
   class Example < RSpec::Core::Example
-    attr_accessor :metadata, :execution_result, :description
+    attr_accessor :metadata, :execution_result, :description, :example_group
 
     def initialize
     end

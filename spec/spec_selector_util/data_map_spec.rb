@@ -1,42 +1,9 @@
 describe SpecSelectorUtil::DataMap do
   subject(:spec_selector) { SpecSelector.new(StringIO.new) }
 
-  let(:example_group) do
-    instance_double('ExampleGroup', examples: [], metadata: {
-      block: :example_group_block
-    })
-  end
+  let(:example_group) { build(:example_group) }
 
   let(:map) { spec_selector.ivar(:@map) }
-
-  # #map takes an example group as an argument
-  describe '#map' do
-    it 'passes the example group to #map_group' do
-      allow(spec_selector).to receive(:map_group).with(example_group)
-      .and_call_original
-      spec_selector.map(example_group)
-      expect(spec_selector).to have_received(:map_group).with(example_group)
-    end
-
-    context 'when the example group contains examples' do
-      it 'passes the example group to #map_examples' do
-        allow(example_group).to receive(:examples) { [instance_double('Example')] }
-        allow(spec_selector).to receive(:map_examples).with(example_group)
-        allow(spec_selector).to receive(:map_group).with(example_group)
-        spec_selector.map(example_group)
-        expect(spec_selector).to have_received(:map_examples).with(example_group)
-      end
-    end
-
-    context 'when the example group does not contain examples' do
-      it 'does not pass the example group to #map_examples' do
-        allow(spec_selector).to receive(:map_group)
-        allow(spec_selector).to receive(:map_examples)
-        spec_selector.map(example_group)
-        expect(spec_selector).not_to have_received(:map_examples)
-      end
-    end
-  end
 
   describe '#top_level_push' do
     before { spec_selector.top_level_push(example_group) }
@@ -114,20 +81,19 @@ describe SpecSelectorUtil::DataMap do
     end
   end
 
-  describe '#map_examples' do
-    let(:example) { instance_double('Example') }
+  describe '#map_example' do
+    let(:example) do
+      build(:example, example_group: example_group)
+    end
 
     before do
+      map[example_group.metadata[:block]] = []
       example_group.examples << example
-      spec_selector.map_examples(example_group)
+      spec_selector.map_example(example)
     end
 
-    it 'stores an example block as a key in @map with an array as its value' do
-      expect(map[:example_group_block]).to be_an(Array)
-    end
-
-    it 'appends the examples to the array' do
-      expect(map[:example_group_block]).to include(example)
+    it 'appends the example to its example group in @map' do
+      expect(map[example_group.metadata[:block]]).to include(example)
     end
   end
 end

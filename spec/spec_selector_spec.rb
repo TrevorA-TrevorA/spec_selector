@@ -30,8 +30,8 @@ describe SpecSelector do
 
     let(:notification) { RCN::GroupNotification.new(group) }
 
-    it 'passes the example group to SpecSelector#map' do
-      expect(spec_selector).to receive(:map).with(group)
+    it 'passes the example group to SpecSelector#map_group' do
+      expect(spec_selector).to receive(:map_group).with(group)
       spec_selector.example_group_started(notification)
     end
 
@@ -48,6 +48,8 @@ describe SpecSelector do
     let(:notification) { RCN::ExampleNotification.send(:new, example) }
 
     before do
+      allow(spec_selector).to receive(:map_example)
+      allow(spec_selector).to receive(:check_inclusion_status)
       spec_selector.example_passed(notification)
     end
 
@@ -71,6 +73,8 @@ describe SpecSelector do
     let(:notification) { RCN::ExampleNotification.send(:new, example) }
 
     before do
+      allow(spec_selector).to receive(:map_example)
+      allow(spec_selector).to receive(:check_inclusion_status)
       spec_selector.example_pending(notification)
     end
 
@@ -99,6 +103,8 @@ describe SpecSelector do
     let(:notification) { RCN::FailedExampleNotification.send(:new, example) }
 
     before do
+      allow(spec_selector).to receive(:map_example)
+      allow(spec_selector).to receive(:check_inclusion_status)
       spec_selector.example_failed(notification)
     end
 

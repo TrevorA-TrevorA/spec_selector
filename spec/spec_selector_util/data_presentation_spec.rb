@@ -242,23 +242,6 @@ describe SpecSelectorUtil::DataPresentation do
       end
     end
 
-    context 'when user has pressed I to view instructions' do
-      it 'displays full instructions' do
-        map, list = [mixed_map, mixed_list]
-        ivars_set(:@map => map, :@list => list, :@instructions => true)
-        spec_selector.display_list
-        expect_full_instructions_to_be_displayed
-      end
-    end
-
-    context 'when user has not pressed I to view full instructions' do
-      it 'displays instruction to press I to view instructions' do
-        ivars_set(:@map => mixed_map, :@list => mixed_list)
-        spec_selector.display_list
-        expect(output).to match(/Press I to view instructions/)
-      end
-    end
-
     it 'displays list of example groups or examples in current level' do
       ivars_set(:@map => mixed_map, :@list => mixed_list)
       spec_selector.display_list
@@ -320,29 +303,6 @@ describe SpecSelectorUtil::DataPresentation do
       it 'returns pending summary of selected example' do
         summary_settings(pending_example)
         expect(spec_selector.example_list).to include(notification)
-      end
-    end
-  end
-
-  describe '#toggle_instructions' do
-    before do
-      allow_methods(:test_data_summary, :navigate)
-      ivars_set(:@map => mixed_map, :@list => mixed_list)
-    end
-
-    context 'when full instructions are not currently displayed' do
-      it 'displays full instructions' do
-        spec_selector.ivar_set(:@instuctions, false)
-        spec_selector.toggle_instructions
-        expect_full_instructions_to_be_displayed
-      end
-    end
-
-    context 'when full instructions are currently displayed' do
-      it 'conceals full instructions' do
-        spec_selector.ivar_set(:@instructions, true)
-        spec_selector.toggle_instructions
-        expect_full_instructions_to_be_hidden
       end
     end
   end
