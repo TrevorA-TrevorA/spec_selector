@@ -22,6 +22,8 @@ module SpecSelectorUtil
     end
 
     def run_only_fails
+      @inclusion_filter = []
+      
       @failed.each do |example|
         example.metadata[:include] = true
         @inclusion_filter << example

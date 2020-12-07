@@ -102,7 +102,7 @@ module SpecSelectorUtil
 
     def exit_instruction_page
       @instructions = false
-      system("tput rmcup")
+      close_alt_buffer
     end
 
     def example_summary_instructions

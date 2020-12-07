@@ -96,7 +96,7 @@ module SpecSelectorUtil
       dir = input == "\e[A" ? -1 : 1
       @selector_index = (@selector_index + dir) % @list.length
       @selected = @list[@selector_index]
-      refresh_display
+      @example_display ? display_example : display_list
     end
 
     def tree_nav_keys(input)
