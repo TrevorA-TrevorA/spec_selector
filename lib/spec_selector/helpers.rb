@@ -39,5 +39,9 @@ module SpecSelectorUtil
     def top_level?
       @list == @active_map[:top_level]
     end
+
+    def filter_view?
+      @list == @inclusion_filter
+    end
   end
 end

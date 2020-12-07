@@ -16,8 +16,8 @@ module SpecSelectorUtil
     end
 
     def back_instructions
-      back_inst = 'Press [back] to return to parent group list'
-      escape_inst = 'Press [escape] to return to top-level group list'
+      back_inst = 'Press [back] to view to parent group list'
+      escape_inst = 'Press [escape] to view to top-level group list'
 
       [back_inst, escape_inst].each do |inst|
         if @instructions

@@ -5,7 +5,9 @@ module SpecSelectorUtil
   module UI
     DIRECTION_KEYS = ["\e[A", "\e[B"].freeze
     TREE_NAVIGATION_KEYS = ["\r", "\x7F", "\e"].freeze
-    OPTION_KEYS = [/t/i, /f/i, /p/i, /q/i, /i/i, /r/i, /m/i, /c/i, /a/i].freeze
+    OPTION_KEYS = [
+      /t/i, /f/i, /p/i, /q/i, /i/i, /r/i, /m/i, /c/i, /a/i, /v/i
+    ].freeze
 
     def exit_only
       q_to_exit
@@ -58,7 +60,7 @@ module SpecSelectorUtil
 
     def exit_instruction_page_only
       exit_instruction_page
-      @example_display ? display_example : selector
+      refresh_display
     end
 
     def top_fail
@@ -94,7 +96,7 @@ module SpecSelectorUtil
       dir = input == "\e[A" ? -1 : 1
       @selector_index = (@selector_index + dir) % @list.length
       @selected = @list[@selector_index]
-      @example_display ? display_example : display_list
+      refresh_display
     end
 
     def tree_nav_keys(input)
@@ -133,6 +135,8 @@ module SpecSelectorUtil
         @selected.metadata[:include] ? filter_remove : filter_include
       when /^c$/i
         clear_filter
+      when /v/i
+        view_inclusion_filter
       end
     end
 

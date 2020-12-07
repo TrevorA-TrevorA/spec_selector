@@ -18,7 +18,7 @@ module SpecSelectorUtil
     def filter_include
       @selected.metadata[:include] = true
       @inclusion_filter << @selected
-      @example_display ? display_example : selector
+      refresh_display
     end
 
     def run_only_fails
@@ -41,7 +41,7 @@ module SpecSelectorUtil
       @inclusion_filter -= [@selected]
       @removed << @selected
       @selected.metadata[:include] = nil
-      @example_display ? display_example : selector
+      refresh_display
     end
 
     def persist_inclusion_filter

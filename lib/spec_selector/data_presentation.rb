@@ -114,7 +114,24 @@ module SpecSelectorUtil
       all_passed_message if all_passing?
       basic_instructions
       empty_line
+      
       @list.each { |item| format_list_item(item) }
+    end
+
+    def view_inclusion_filter
+      if @inclusion_filter.empty?
+        @list = @active_map[:top_level]
+        refresh_display 
+      end
+      
+      exit_instruction_page if @instructions
+      @list = @inclusion_filter
+      @selected = @list.first if !@selected.metadata[:include]
+      selector
+    end
+
+    def refresh_display
+      @example_display ? display_example : selector
     end
 
     def display_example
