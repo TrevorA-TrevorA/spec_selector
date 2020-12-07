@@ -22,6 +22,8 @@ module SpecSelectorUtil
     end
 
     def run_only_fails
+      return if @failed.empty?
+      
       @inclusion_filter = []
       
       @failed.each do |example|
@@ -47,8 +49,10 @@ module SpecSelectorUtil
     end
 
     def persist_inclusion_filter
-      @inclusion_filter.uniq!
-      @filtered_item_descriptions = @inclusion_filter.map(&:description)
+      @filtered_item_descriptions = @inclusion_filter.map do |item|
+        item.metadata[:full_description]
+      end
+      
       filter = @filtered_item_descriptions.to_json
       path = File.dirname(__FILE__)
       File.write("#{path}/inclusion_filter/inclusion.json", filter)
@@ -105,7 +109,7 @@ module SpecSelectorUtil
     end
 
     def check_inclusion_status(item)
-      if @last_run_filtered_descriptions.include?(item.description)
+      if @last_run_filtered_descriptions.include?(item.metadata[:full_description])
         @inclusion_filter << item
         item.metadata[:include] = true
       end
