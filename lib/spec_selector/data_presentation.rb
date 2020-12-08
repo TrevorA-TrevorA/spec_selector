@@ -85,7 +85,7 @@ module SpecSelectorUtil
       @exclude_passing = false
     end
 
-    def passing_filter
+    def toggle_passing
       return if all_passing?
       
       @exclude_passing ? include_passing! : exclude_passing!

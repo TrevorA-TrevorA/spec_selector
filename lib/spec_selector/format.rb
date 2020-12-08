@@ -5,9 +5,9 @@ module SpecSelectorUtil
   # as methods that determine how specific list items will be formatted.
   module Format
     ESCAPE_CODES = {
-      green: 32,
-      red: 31,
-      yellow: 33,
+      green: '1;32',  # the numeric codes for green, yellow, and red are
+      red: '1;31',    # 32, 31, and 33 respectively. The '1;' is prepended
+      yellow: '1;33', # for bold lettering.
       italicize: 3,
       bold: 1
     }.freeze

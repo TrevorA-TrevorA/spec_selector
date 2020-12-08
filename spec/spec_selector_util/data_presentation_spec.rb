@@ -179,7 +179,7 @@ describe SpecSelectorUtil::DataPresentation do
     end
   end
 
-  describe '#passing_filter' do
+  describe '#toggle_passing' do
     before do
       allow_methods(:display_list, :navigate)
       map, list, group = [mixed_map, mixed_list, pass_group]
@@ -188,16 +188,16 @@ describe SpecSelectorUtil::DataPresentation do
 
     context 'when displayed list includes all-passing example groups' do
       it 'removes all-passing example groups from displayed list' do
-        spec_selector.passing_filter
+        spec_selector.toggle_passing
         expect(spec_selector.ivar(:@list)).not_to include(pass_group)
       end
     end
 
     context 'when all-passing example groups are already excluded' do
       it 'reverses the exclusion of all-passing example groups' do
-        spec_selector.passing_filter
+        spec_selector.toggle_passing
         expect(spec_selector.ivar(:@list)).not_to include(pass_group)
-        spec_selector.passing_filter
+        spec_selector.toggle_passing
         expect(spec_selector.ivar(:@list)).to include(pass_group)
       end
     end

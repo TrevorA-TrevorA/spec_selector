@@ -65,7 +65,7 @@ module SpecSelectorUtil
     end
 
     def reset_arguments
-      old_descriptions = @last_run_filtered_descriptions.map { |d| " -e #{d}" }
+      old_descriptions = @last_run_filtered_descriptions.map { |d| "-e #{d}" }
       args = ARGV.join(" ")
       old_descriptions.each { |d| args.slice!(d) }
       args

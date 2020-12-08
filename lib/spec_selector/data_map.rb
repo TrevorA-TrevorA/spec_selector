@@ -2,7 +2,7 @@
 
 module SpecSelectorUtil
   # The DataMap module contains methods used to build a hash map of nested
-  # lists, which can be rendered in their traversable form through the
+  # lists, which can be rendered in their interactive form through the
   # DataPresentation methods.
   module DataMap
     def top_level_push(group)

@@ -381,7 +381,7 @@ describe SpecSelectorUtil::UI do
 
   describe '#option_keys' do
     before do
-      allow_methods(:top_fail, :passing_filter, :quit)
+      allow_methods(:top_fail, :toggle_passing, :quit)
     end
 
     context 'when input string matches /t/i' do
@@ -392,9 +392,9 @@ describe SpecSelectorUtil::UI do
     end
 
     context 'when input string matches /p/i' do
-      it 'calls #passing_filter' do
+      it 'calls #toggle_passing' do
         spec_selector.option_keys('p')
-        expect(spec_selector).to have_received(:passing_filter)
+        expect(spec_selector).to have_received(:toggle_passing)
       end
     end
 

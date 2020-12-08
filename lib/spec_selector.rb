@@ -14,7 +14,7 @@ require_relative 'spec_selector/instructions'
 require_relative 'spec_selector/state'
 
 # The SpecSelector instance receives example execution data from the reporter
-# and arranges it into a formatted, traversable map.
+# and arranges it into a formatted, navigable map.
 class SpecSelector
   include SpecSelectorUtil::UI
   include SpecSelectorUtil::Terminal

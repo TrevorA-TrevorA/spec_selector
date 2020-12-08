@@ -118,7 +118,7 @@ module SpecSelectorUtil
       when /t/i
         top_fail
       when /p/i
-        passing_filter
+        toggle_passing
       when /f/i
         run_only_fails
       when /q/i
