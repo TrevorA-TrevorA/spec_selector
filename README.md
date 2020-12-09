@@ -22,3 +22,9 @@ Press F to rerun only failed examples.
 ![failed example filter](gifs/spec_selector_demo_4.gif)
 
 Press C to clear the inclusion filter at any time. Press A to clear the inclusion filter and rerun all examples. 
+
+![clear filter and rerun](gifs/spec_selector_demo_5.gif)
+
+If unsure how to perform an action, press I to view the instructions
+
+![instructions](gifs/spec_selector_demo_6)
