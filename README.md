@@ -9,6 +9,7 @@ example groups. Select an example group to view its subgroups. Press backspace t
 <img src="gifs/spec_selector_demo_1.gif" height="500"/>
 
 Select an example to view a result summary. The summary page of a failed or pending example will display all of the usual information about why it failed or is pending. Press T at any point to view the top failed example. Press escape to return to the top-level list.
+
 <img src="gifs/spec_selector_demo_2.gif" height="500"/>
 
 spec_selector enables quick inclusion filtering. Press M to mark the selected example or example group for inclusion in the next run. Press R to rerun examples with the filter selection (or to rerun all examples if the filter is empty). 
