@@ -2,7 +2,7 @@
 
 spec_selector is an interactive 'custom formatter' for RSpec that facilitates quick navigation and filter control of example run results. 
 
-How it works:
+**How it works**
 
 At the end of an example run, spec_selector displays a list of top-level
 example groups. Select an example group to view its subgroups. Press backspace to view the list that includes the parent of the current list.
@@ -32,3 +32,7 @@ If unsure how to perform an action, press I to view the instructions
 
 _instructions_
 ![instructions](gifs/spec_selector_demo_six.gif)
+
+**Availability**
+
+This project is currently still in development and will soon be released as a gem through rubygems.org. At that time, it will be available to all.
