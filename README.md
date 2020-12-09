@@ -6,7 +6,6 @@ How it works:
 
 At the end of an example run, spec_selector displays a list of top-level
 example groups. Select an example group to view its subgroups. Press backspace to view the list that includes the parent of the current list.
-<<<<<<< HEAD
 
 ![start and list navigation](gifs/spec_selector_demo_one.gif)
 
