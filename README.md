@@ -12,10 +12,11 @@ Select an example to view a result summary. The summary page of a failed or pend
 
 ![example selection](gifs/spec_selector_demo_2.gif)
 
-spec_selector enables quick inclusion filtering. Press M to mark the selected example or example group for inclusion in the next run. Press R to rerun examples with the filter selection (or to rerun all examples if the filter is empty).
+Press M to mark the selected example or example group for inclusion in the next run. 
+Press R to rerun examples with the filter selection (or to rerun all examples if the filter is empty).
 ![inclusion filter](gifs/spec_selector_demo_3.gif)
 
-Press F to rerun only failed results from the current set
+Press F to rerun only failed results from the current set:
 ![fail filter](gifs/spec_selector_demo_4.gif)
 
 Press C to clear the inclusion filter at any time. Press A to clear the inclusion filter and rerun all examples. 
