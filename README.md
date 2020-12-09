@@ -27,4 +27,4 @@ Press C to clear the inclusion filter at any time. Press A to clear the inclusio
 
 If unsure how to perform an action, press I to view the instructions
 
-![instructions](gifs/spec_selector_demo_6)
+![instructions](gifs/spec_selector_demo_6.gif)
