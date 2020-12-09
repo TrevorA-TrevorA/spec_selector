@@ -16,6 +16,8 @@ module SpecSelectorUtil
     end
 
     def filter_include
+      return if @selected.metadata[:description_args].empty?
+      
       @selected.metadata[:include] = true
       @inclusion_filter << @selected
       refresh_display
@@ -27,6 +29,7 @@ module SpecSelectorUtil
       @inclusion_filter = []
       
       @failed.each do |example|
+        next if example.metadata[:description_args].empty?
         example.metadata[:include] = true
         @inclusion_filter << example
       end
