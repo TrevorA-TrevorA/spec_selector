@@ -63,7 +63,7 @@ module SpecSelectorUtil
 
     def highlight(text, included = false)
       text += ' √' if included
-      @output.puts "\e[1;7m#{text}\e[27;22m"
+      @output.puts "\e[1;30;107m#{text}\e[0m"
     end
 
     def lineage(data)
