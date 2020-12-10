@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rspec/core'
+
 require 'io/console'
 require 'json'
 require_relative 'spec_selector/terminal'
@@ -80,7 +80,6 @@ class SpecSelector
   end
 
   def dump_summary(notification)
-    debugger
     @outside_errors_count = notification.errors_outside_of_examples_count
     errors_before_formatter_initialization
     print_errors(notification) if @outside_errors_count.positive?
