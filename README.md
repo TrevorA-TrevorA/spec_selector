@@ -36,3 +36,7 @@ _instructions_
 **Availability**
 
 This project is currently still in development and will soon be released as a gem through rubygems.org. At that time, it will be available to all.
+
+**Author**
+
+Trevor Almon
