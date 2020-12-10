@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_selector'
-require 'factory_bot'
 require 'stringio'
+require 'factory_bot'
 require 'timeout'
 require 'shared'
 
