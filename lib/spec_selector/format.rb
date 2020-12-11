@@ -9,7 +9,7 @@ module SpecSelectorUtil
       red: '1;31',    # 32, 31, and 33 respectively. The '1;' is prepended
       yellow: '1;33', # for bold lettering.
       italicize: 3,
-      bold: 1
+      bold: '1;97'
     }.freeze
 
     ESCAPE_CODES.each do |sym, num|
