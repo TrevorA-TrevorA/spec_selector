@@ -109,7 +109,7 @@ module SpecSelectorUtil
       @example_display ? display_example : top_level_list
     end
 
-    def top_fail_filter
+    def top_fail!
       @inclusion_filter = []
       filter_include(@failed.first)
       rerun

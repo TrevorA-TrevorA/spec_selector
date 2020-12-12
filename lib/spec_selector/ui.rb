@@ -116,7 +116,7 @@ module SpecSelectorUtil
 
       case input
       when /T/
-        top_fail_filter
+        top_fail!
       when /t/
         top_fail
       when /p/i
