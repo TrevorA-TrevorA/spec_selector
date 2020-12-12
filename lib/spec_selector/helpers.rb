@@ -43,5 +43,9 @@ module SpecSelectorUtil
     def filter_view?
       @list == @inclusion_filter
     end
+
+    def one_liner?(example)
+      example.metadata[:description_args].empty?
+    end
   end
 end

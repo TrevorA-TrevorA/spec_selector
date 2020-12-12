@@ -115,7 +115,9 @@ module SpecSelectorUtil
     def option_keys(input)
 
       case input
-      when /t/i
+      when /T/
+        top_fail_filter
+      when /t/
         top_fail
       when /p/i
         toggle_passing
@@ -133,6 +135,7 @@ module SpecSelectorUtil
       when /m/i
         return if @instructions
         @selected.metadata[:include] ? filter_remove : filter_include
+        refresh_display
       when /^c$/i
         clear_filter
       when /v/i

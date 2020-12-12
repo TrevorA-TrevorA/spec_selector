@@ -15,12 +15,11 @@ module SpecSelectorUtil
       system("#{rerun} #{pid} #{working_dir} #{$0} #{args} #{included} #{marker}")
     end
 
-    def filter_include
-      return if @selected.metadata[:description_args].empty?
+    def filter_include(example = @selected)
+      return if one_liner?(example)
       
-      @selected.metadata[:include] = true
-      @inclusion_filter << @selected
-      refresh_display
+      example.metadata[:include] = true
+      @inclusion_filter << example
     end
 
     def run_only_fails
@@ -29,7 +28,7 @@ module SpecSelectorUtil
       @inclusion_filter = []
       
       @failed.each do |example|
-        next if example.metadata[:description_args].empty?
+        next if one_liner?(example)
         example.metadata[:include] = true
         @inclusion_filter << example
       end
@@ -48,7 +47,6 @@ module SpecSelectorUtil
       @inclusion_filter -= [@selected]
       @removed << @selected
       @selected.metadata[:include] = nil
-      refresh_display
     end
 
     def persist_inclusion_filter
@@ -109,6 +107,12 @@ module SpecSelectorUtil
       @inclusion_filter = []
       return if @instructions
       @example_display ? display_example : top_level_list
+    end
+
+    def top_fail_filter
+      @inclusion_filter = []
+      filter_include(@failed.first)
+      rerun
     end
 
     def check_inclusion_status(item)
