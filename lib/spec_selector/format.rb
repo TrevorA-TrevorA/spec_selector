@@ -9,7 +9,7 @@ module SpecSelectorUtil
       red: '1;31',    # 32, 31, and 33 respectively. The '1;' is prepended
       yellow: '1;33', # for bold lettering.
       italicize: 3,
-      bold: '1;97'
+      bold: 1
     }.freeze
 
     ESCAPE_CODES.each do |sym, num|
@@ -63,7 +63,7 @@ module SpecSelectorUtil
 
     def highlight(text, included = false)
       text += ' √' if included
-      @output.puts "\e[1;30;107m#{text}\e[0m"
+      @output.puts "\e[1;7m#{text}\e[0m"
     end
 
     def lineage(data)
