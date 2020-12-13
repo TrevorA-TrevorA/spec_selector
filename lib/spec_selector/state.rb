@@ -39,7 +39,7 @@ module SpecSelectorUtil
     end
 
     def rerun_all
-      return if @last_run_filtered_descriptions.empty?
+      return if @last_run_descriptions.empty?
 
       @inclusion_filter = []
       rerun
@@ -47,7 +47,6 @@ module SpecSelectorUtil
 
     def filter_remove
       @inclusion_filter -= [@selected]
-      @removed << @selected
       @selected.metadata[:include] = nil
     end
 
@@ -73,17 +72,14 @@ module SpecSelectorUtil
     end
 
     def remove_old_locations(args)
-      locations_file = "#{current_path}/inclusion_filter/locations.json"
-      return unless File.exist?(locations_file)
+      return args if @last_run_locations.empty?
 
-      old_location_data = File.open(locations_file)
-      old_locations = JSON.load(old_location_data)
-      old_locations.each { |loc| args.slice!(loc) }
+      @last_run_locations.each { |loc| args.slice!(loc) }
       args
     end
 
     def remove_old_descriptions
-      old_descriptions = @last_run_filtered_descriptions.map { |d| "-e #{d}" }
+      old_descriptions = @last_run_descriptions.map { |d| "-e #{d}" }
       args = ARGV.join(" ")
       old_descriptions.each { |d| args.slice!(d) }
       args
@@ -130,7 +126,6 @@ module SpecSelectorUtil
       return if @inclusion_filter.empty?
 
       @inclusion_filter.each { |item| item.metadata[:include] = nil }
-      @removed = @inclusion_filter
       @inclusion_filter = []
       return if @instructions
       @example_display ? display_example : top_level_list
@@ -143,7 +138,7 @@ module SpecSelectorUtil
     end
 
     def check_inclusion_status(item)
-      if @last_run_filtered_descriptions.include?(item.metadata[:full_description])
+      if @last_run_descriptions.include?(item.metadata[:full_description])
         @inclusion_filter << item
         item.metadata[:include] = true
       end
