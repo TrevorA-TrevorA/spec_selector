@@ -10,6 +10,7 @@ module SpecSelectorUtil
       pid = Process.pid
       args = reset_arguments
       args = args + " #{prepare_location_arguments}" if @filter_mode == :location
+      delete_filter_data if @inclusion_filter.empty?
       included = @filter_mode == :description ? prepare_description_arguments : nil
       marker = @filter_mode == :description ? @filtered_item_descriptions.count : 0
       rerun = current_path + '/scripts/rerun.sh'
@@ -60,8 +61,10 @@ module SpecSelectorUtil
     end
 
     def delete_filter_data
-      filter_file = "#{current_path}/inclusion_filter/descriptions.json"
-      File.delete(filter_file) if File.exist?(filter_file)
+      descriptions = "#{current_path}/inclusion_filter/descriptions.json"
+      locations = "#{current_path}/inclusion_filter/locations.json"
+      File.delete(descriptions) if File.exist?(descriptions)
+      File.delete(locations) if File.exist?(locations)
     end
 
     def reset_arguments
