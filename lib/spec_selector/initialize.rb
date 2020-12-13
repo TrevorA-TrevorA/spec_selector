@@ -40,8 +40,8 @@ module SpecSelectorUtil
     def get_descriptions
       path = File.dirname(__FILE__)
 
-      if File.exist?("#{path}/inclusion_filter/inclusion.json")
-        included = File.open("#{path}/inclusion_filter/inclusion.json")
+      if File.exist?("#{path}/inclusion_filter/descriptions.json")
+        included = File.open("#{path}/inclusion_filter/descriptions.json")
         @last_run_filtered_descriptions = JSON.load(included)
       else
         @last_run_filtered_descriptions = []
@@ -60,6 +60,7 @@ module SpecSelectorUtil
       @inclusion_filter = []
       @instructions = false
       @removed = []
+      @filter_mode = :description
     end
   end
 end

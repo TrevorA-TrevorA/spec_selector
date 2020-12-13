@@ -44,6 +44,10 @@ module SpecSelectorUtil
       @list == @inclusion_filter
     end
 
+    def current_path
+      File.dirname(__FILE__)
+    end
+
     def one_liner?(example)
       example.metadata[:description_args].empty?
     end

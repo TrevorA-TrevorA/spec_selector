@@ -3,23 +3,24 @@ module SpecSelectorUtil
     def rerun
       close_alt_buffer if @instructions
       clear_frame
-      persist_inclusion_filter
+      persist_description_filter
+      persist_location_arguments if @filter_mode == :location
       italicize('running examples...')
       working_dir = Dir.pwd
       pid = Process.pid
       args = reset_arguments
-      included = prepare_description_arguments
-      marker = @filtered_item_descriptions.count
-      rerun = File.dirname(__FILE__) + '/scripts/rerun.sh'
+      args = args + " #{prepare_location_arguments}" if @filter_mode == :location
+      included = @filter_mode == :description ? prepare_description_arguments : nil
+      marker = @filter_mode == :description ? @filtered_item_descriptions.count : 0
+      rerun = current_path + '/scripts/rerun.sh'
       Signal.trap('TERM') { clear_frame; exit }
       system("#{rerun} #{pid} #{working_dir} #{$0} #{args} #{included} #{marker}")
     end
 
-    def filter_include(example = @selected)
-      return if one_liner?(example)
-      
-      example.metadata[:include] = true
-      @inclusion_filter << example
+    def filter_include(item = @selected)
+      @filter_mode = :location if one_liner?(item)
+      item.metadata[:include] = true
+      @inclusion_filter << item
     end
 
     def run_only_fails
@@ -28,7 +29,7 @@ module SpecSelectorUtil
       @inclusion_filter = []
       
       @failed.each do |example|
-        next if one_liner?(example)
+        @filter_mode = :location if one_liner?(example)
         example.metadata[:include] = true
         @inclusion_filter << example
       end
@@ -49,27 +50,50 @@ module SpecSelectorUtil
       @selected.metadata[:include] = nil
     end
 
-    def persist_inclusion_filter
+    def persist_description_filter
       @filtered_item_descriptions = @inclusion_filter.map do |item|
         item.metadata[:full_description]
       end
       
       filter = @filtered_item_descriptions.to_json
-      path = File.dirname(__FILE__)
-      File.write("#{path}/inclusion_filter/inclusion.json", filter)
+      File.write("#{current_path}/inclusion_filter/descriptions.json", filter)
     end
 
     def delete_filter_data
-      path = File.dirname(__FILE__)
-      filter_file = "#{path}/inclusion_filter/inclusion.json"
+      filter_file = "#{current_path}/inclusion_filter/descriptions.json"
       File.delete(filter_file) if File.exist?(filter_file)
     end
 
     def reset_arguments
+      args = remove_old_descriptions
+      remove_old_locations(args)
+    end
+
+    def remove_old_locations(args)
+      locations_file = "#{current_path}/inclusion_filter/locations.json"
+      return unless File.exist?(locations_file)
+
+      old_location_data = File.open(locations_file)
+      old_locations = JSON.load(old_location_data)
+      old_locations.each { |loc| args.slice!(loc) }
+      args
+    end
+
+    def remove_old_descriptions
       old_descriptions = @last_run_filtered_descriptions.map { |d| "-e #{d}" }
       args = ARGV.join(" ")
       old_descriptions.each { |d| args.slice!(d) }
       args
+    end
+
+    def persist_location_arguments
+      @filtered_locations = @inclusion_filter.map { |item| item.location }
+      locations = @filtered_locations.to_json
+      File.write("#{current_path}/inclusion_filter/locations.json", locations)
+    end
+
+    def prepare_location_arguments
+      @filtered_locations.join(" ")
     end
 
     def prepare_description_arguments
