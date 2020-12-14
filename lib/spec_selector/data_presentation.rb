@@ -131,7 +131,8 @@ module SpecSelectorUtil
     end
 
     def refresh_display
-      @example_display ? display_example : selector
+      set_selected
+      @example_display ? display_example : display_list
     end
 
     def display_example

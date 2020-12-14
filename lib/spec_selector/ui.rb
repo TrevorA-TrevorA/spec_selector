@@ -15,10 +15,14 @@ module SpecSelectorUtil
     end
 
     def selector
-      @list ||= @active_map[:top_level]
-      @selected ||= @list.first
+      set_selected
       display_list
       navigate
+    end
+
+    def set_selected
+      @list ||= @active_map[:top_level]
+      @selected ||= @list.first
     end
 
     def navigate
@@ -130,8 +134,8 @@ module SpecSelectorUtil
       when /q/i
         quit
       when /i/i
-        exit_instruction_page_only if @instructions
-        view_instructions_page
+        view_instructions_page unless @instructions
+        exit_instruction_page_only
       when /r/i
         rerun
       when /^a$/i
