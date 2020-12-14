@@ -1,27 +1,44 @@
 module SpecSelectorUtil
    module State
     def rerun
-      close_alt_buffer if @instructions
-      clear_frame
-      persist_description_filter
-      persist_location_arguments if @filter_mode == :location
-      italicize('running examples...')
-      working_dir = Dir.pwd
-      pid = Process.pid
-      args = reset_arguments
-      args = args + " #{prepare_location_arguments}" if @filter_mode == :location
-      delete_filter_data if @inclusion_filter.empty?
-      included = @filter_mode == :description ? prepare_description_arguments : nil
-      marker = @filter_mode == :description ? @filtered_item_descriptions.count : 0
+      prepare_rerun
+      pid, working_dir = [Process.pid, Dir.pwd]
+      descriptions, marker = appended_arguments
       rerun = current_path + '/scripts/rerun.sh'
       Signal.trap('TERM') { clear_frame; exit }
-      system("#{rerun} #{pid} #{working_dir} #{$0} #{args} #{included} #{marker}")
+      system("#{rerun} #{pid} #{working_dir} #{$0} #{@rerun_arguments} #{descriptions} #{marker}")
     end
 
     def filter_include(item = @selected)
       @filter_mode = :location if one_liner?(item)
       item.metadata[:include] = true
       @inclusion_filter << item
+    end
+
+    def prepare_rerun
+      persist_filter
+      reset_arguments
+      prepare_location_arguments if @filter_mode == :location
+      delete_filter_data if @inclusion_filter.empty?
+    end
+
+    def rerun_display
+      close_alt_buffer if @instructions
+      clear_frame
+      italicize('running examples...')
+    end
+
+    def appended_arguments
+      if @filter_mode == :description
+        return [prepare_description_arguments, @filtered_descriptions.count]
+      else
+        [nil, 0]
+      end
+    end
+
+    def persist_filter
+      persist_descriptions
+      persist_locations if @filter_mode == :location
     end
 
     def run_only_fails
@@ -50,12 +67,12 @@ module SpecSelectorUtil
       @selected.metadata[:include] = nil
     end
 
-    def persist_description_filter
-      @filtered_item_descriptions = @inclusion_filter.map do |item|
+    def persist_descriptions
+      @filtered_descriptions = @inclusion_filter.map do |item|
         item.metadata[:full_description]
       end
       
-      filter = @filtered_item_descriptions.to_json
+      filter = @filtered_descriptions.to_json
       File.write("#{current_path}/inclusion_filter/descriptions.json", filter)
     end
 
@@ -67,59 +84,50 @@ module SpecSelectorUtil
     end
 
     def reset_arguments
-      args = remove_old_descriptions
-      remove_old_locations(args)
+      remove_old_descriptions
+      remove_old_locations
     end
 
-    def remove_old_locations(args)
-      return args if @last_run_locations.empty?
-
-      @last_run_locations.each { |loc| args.slice!(loc) }
-      args
+    def remove_old_locations
+      return if @last_run_locations.empty?
+      @last_run_locations.each { |loc| @rerun_arguments.slice!(loc) }
     end
 
     def remove_old_descriptions
       old_descriptions = @last_run_descriptions.map { |d| "-e #{d}" }
-      args = ARGV.join(" ")
-      old_descriptions.each { |d| args.slice!(d) }
-      args
+      @rerun_arguments = ARGV.join(" ")
+      old_descriptions.each { |d| @rerun_arguments.slice!(d) }
     end
 
-    def persist_location_arguments
+    def persist_locations
       @filtered_locations = @inclusion_filter.map { |item| item.location }
       locations = @filtered_locations.to_json
       File.write("#{current_path}/inclusion_filter/locations.json", locations)
     end
 
     def prepare_location_arguments
-      @filtered_locations.join(" ")
+      @rerun_arguments += " #{@filtered_locations.join(" ")}"
     end
 
     def prepare_description_arguments
       return if @inclusion_filter.empty?
 
-      included = @filtered_item_descriptions
-      contains_singles = nil
+      included = @filtered_descriptions
+      contains_singles = included.select { |desc| desc.include?("'") }
+      included -= contains_singles
 
-      included.each do |desc|
-        if desc.include?("'")
-          desc.insert(0, "\"")
-          desc.insert(-1, "\"")
-          contains_singles = desc
-        end
+      return contains_singles.to_s if included.empty?
+        
+      included = "#{included}".gsub("\"", "'")
+      return included if contains_singles.empty?
+      
+      contains_singles.map! do |desc|
+        desc.insert(0, "\"")
+        desc.insert(-1, "\"")
       end
-
-      included -= [contains_singles]
-
-      if included.empty?
-        return contains_singles
-      elsif !contains_singles
-        return "#{included}".gsub("\"", "'")
-      else
-        included = "#{included}".gsub("\"", "'")
-        included[-1] = ", #{contains_singles}]"
-        return included
-      end
+        
+      included[-1] = ", #{contains_singles.join(", ")}]"
+      included
     end
 
     def clear_filter
