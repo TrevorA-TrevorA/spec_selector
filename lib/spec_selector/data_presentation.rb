@@ -97,7 +97,8 @@ module SpecSelectorUtil
       @list = new_list
       @selected = nil
       @example_display = false
-      selector
+      set_selected
+      display_list
     end
 
     def status_summary(notification)
@@ -119,15 +120,13 @@ module SpecSelectorUtil
     end
 
     def view_inclusion_filter
-      if @inclusion_filter.empty?
-        @list = @active_map[:top_level]
-        refresh_display 
-      end
+      return if @inclusion_filter.empty?
       
       exit_instruction_page if @instructions
       @list = @inclusion_filter
       @selected = @list.first if !@selected.metadata[:include]
-      selector
+      set_selected
+      display_list
     end
 
     def refresh_display

@@ -50,7 +50,8 @@ module SpecSelectorUtil
       @example_display = false
       @selected = nil
       @list = @active_map[:top_level]
-      selector
+      set_selected
+      display_list
     end
 
     def select_item
@@ -63,7 +64,8 @@ module SpecSelectorUtil
 
       @list = @active_map[@selected.metadata[:block]]
       @selected = nil
-      selector
+      set_selected
+      display_list
     end
 
     def exit_instruction_page_only
@@ -83,7 +85,8 @@ module SpecSelectorUtil
       return if top_level?
 
       parent_list
-      selector
+      set_selected
+      display_list
     end
 
     def parent_list
