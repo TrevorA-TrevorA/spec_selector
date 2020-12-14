@@ -52,7 +52,11 @@ module SpecSelectorUtil
     def select_item
       return if @example_display
 
-      display_example if example?(@selected)
+      if example?(@selected)
+        display_example 
+        return
+      end
+
       @list = @active_map[@selected.metadata[:block]]
       @selected = nil
       selector

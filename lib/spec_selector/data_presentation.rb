@@ -145,7 +145,6 @@ module SpecSelectorUtil
       @selector_index = @list.index(@selected)
       view_other_examples(status) if @list.count > 1 && @instructions
       format_example(status, data)
-      navigate
     end
 
     def example_list

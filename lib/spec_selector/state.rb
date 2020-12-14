@@ -2,11 +2,11 @@ module SpecSelectorUtil
    module State
     def rerun
       prepare_rerun
-      pid, working_dir = [Process.pid, Dir.pwd]
       descriptions, marker = appended_arguments
-      rerun = current_path + '/scripts/rerun.sh'
+      rerun_script = current_path + '/scripts/rerun.sh'
+      prepend = [rerun_script, Process.pid, Dir.pwd].join(" ")
       Signal.trap('TERM') { clear_frame; exit }
-      system("#{rerun} #{pid} #{working_dir} #{$0} #{@rerun_arguments} #{descriptions} #{marker}")
+      system("#{prepend} #{$0} #{@rerun_arguments} #{descriptions} #{marker}")
     end
 
     def filter_include(item = @selected)
@@ -16,42 +16,35 @@ module SpecSelectorUtil
     end
 
     def prepare_rerun
+      display_rerun
       persist_filter
       reset_arguments
-      prepare_location_arguments if @filter_mode == :location
+      prepare_location_arguments if location_mode?
       delete_filter_data if @inclusion_filter.empty?
     end
 
-    def rerun_display
+    def display_rerun
       close_alt_buffer if @instructions
       clear_frame
       italicize('running examples...')
     end
 
     def appended_arguments
-      if @filter_mode == :description
-        return [prepare_description_arguments, @filtered_descriptions.count]
-      else
-        [nil, 0]
-      end
+      return [nil, 0] if location_mode?
+
+      [prepare_description_arguments, @filtered_descriptions.count]
     end
 
     def persist_filter
       persist_descriptions
-      persist_locations if @filter_mode == :location
+      persist_locations if location_mode?
     end
 
     def run_only_fails
       return if @failed.empty?
       
       @inclusion_filter = []
-      
-      @failed.each do |example|
-        @filter_mode = :location if one_liner?(example)
-        example.metadata[:include] = true
-        @inclusion_filter << example
-      end
-
+      @failed.each { |example| filter_include(example) }
       rerun
     end
 
@@ -73,14 +66,13 @@ module SpecSelectorUtil
       end
       
       filter = @filtered_descriptions.to_json
-      File.write("#{current_path}/inclusion_filter/descriptions.json", filter)
+      File.write(@descriptions_file, filter)
     end
 
     def delete_filter_data
-      descriptions = "#{current_path}/inclusion_filter/descriptions.json"
-      locations = "#{current_path}/inclusion_filter/locations.json"
-      File.delete(descriptions) if File.exist?(descriptions)
-      File.delete(locations) if File.exist?(locations)
+      [@descriptions_file, @locations_file].each do |file|
+        File.delete(file) if File.exist?(file)
+      end
     end
 
     def reset_arguments
@@ -94,15 +86,15 @@ module SpecSelectorUtil
     end
 
     def remove_old_descriptions
-      old_descriptions = @last_run_descriptions.map { |d| "-e #{d}" }
+      old_descriptions = @last_run_descriptions.map { |desc| "-e #{desc}" }
       @rerun_arguments = ARGV.join(" ")
-      old_descriptions.each { |d| @rerun_arguments.slice!(d) }
+      old_descriptions.each { |desc| @rerun_arguments.slice!(desc) }
     end
 
     def persist_locations
       @filtered_locations = @inclusion_filter.map { |item| item.location }
       locations = @filtered_locations.to_json
-      File.write("#{current_path}/inclusion_filter/locations.json", locations)
+      File.write(@locations_file, locations)
     end
 
     def prepare_location_arguments
@@ -112,20 +104,14 @@ module SpecSelectorUtil
     def prepare_description_arguments
       return if @inclusion_filter.empty?
 
-      included = @filtered_descriptions
-      contains_singles = included.select { |desc| desc.include?("'") }
-      included -= contains_singles
-
+      contains_singles = @filtered_descriptions.select { |desc| desc.include?("'") }
+      included = @filtered_descriptions - contains_singles
       return contains_singles.to_s if included.empty?
         
       included = "#{included}".gsub("\"", "'")
       return included if contains_singles.empty?
       
-      contains_singles.map! do |desc|
-        desc.insert(0, "\"")
-        desc.insert(-1, "\"")
-      end
-        
+      contains_singles.map!(&:dump)
       included[-1] = ", #{contains_singles.join(", ")}]"
       included
     end

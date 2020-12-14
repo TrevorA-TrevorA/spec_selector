@@ -95,7 +95,7 @@ module SpecSelectorUtil
       bold('Press I to exit instructions')
       empty_line
       bold('Press Q to quit')
-      navigate
+      bind_input
     end
 
     def top_fail_text

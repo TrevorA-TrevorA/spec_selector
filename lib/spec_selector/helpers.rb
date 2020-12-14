@@ -32,6 +32,14 @@ module SpecSelectorUtil
       example.execution_result.status
     end
 
+    def description_mode?
+      @filter_mode == :description
+    end
+
+    def location_mode?
+      @filter_mode == :location
+    end
+
     def empty_line
       @output.puts "\n"
     end

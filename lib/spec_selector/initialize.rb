@@ -38,8 +38,8 @@ module SpecSelectorUtil
     end
 
     def get_locations
-      if File.exist?("#{current_path}/inclusion_filter/locations.json")
-        locations = File.open("#{current_path}/inclusion_filter/locations.json")
+      if File.exist?(@locations_file)
+        locations = File.open(@locations_file)
         @last_run_locations = JSON.load(locations)
         @filter_mode = :location
       else
@@ -48,12 +48,21 @@ module SpecSelectorUtil
     end
 
     def get_descriptions
-      if File.exist?("#{current_path}/inclusion_filter/descriptions.json")
-        included = File.open("#{current_path}/inclusion_filter/descriptions.json")
+      if File.exist?(@descriptions_file)
+        included = File.open(@descriptions_file)
         @last_run_descriptions = JSON.load(included)
       else
         @last_run_descriptions = []
       end
+    end
+
+    def init_filter
+      @descriptions_file = "#{current_path}/inclusion_filter/descriptions.json"
+      @locations_file = "#{current_path}/inclusion_filter/locations.json"
+      @inclusion_filter = []
+      @filter_mode = :description
+      get_descriptions
+      get_locations
     end
 
     def initialize_all
@@ -64,11 +73,8 @@ module SpecSelectorUtil
       init_pass_inclusion
       init_map
       init_selector
-      @inclusion_filter = []
+      init_filter
       @instructions = false
-      @filter_mode = :description
-      get_descriptions
-      get_locations
     end
   end
 end
