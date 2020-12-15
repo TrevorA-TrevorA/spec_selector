@@ -114,14 +114,19 @@ module SpecSelectorUtil
       print_messages unless @messages.empty?
       all_passed_message if all_passing?
       basic_instructions
+      print_notices
       empty_line
       
       @list.each { |item| format_list_item(item) }
     end
 
     def view_inclusion_filter
-      return if @inclusion_filter.empty?
+      if @inclusion_filter.empty?
+        empty_filter_notice
+        return
+      end
       
+      @example_display = false
       exit_instruction_page if @instructions
       @list = @inclusion_filter
       @selected = @list.first if !@selected.metadata[:include]

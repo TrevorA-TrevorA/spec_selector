@@ -67,6 +67,7 @@ module SpecSelectorUtil
 
     def initialize_all
       @messages = []
+      @notices = []
       init_example_store
       init_summaries
       init_counters

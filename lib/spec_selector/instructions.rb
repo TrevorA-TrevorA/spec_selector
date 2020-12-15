@@ -7,11 +7,17 @@ module SpecSelectorUtil
     def basic_instructions
       i_for_instructions
       up_down_select_instructions
-      q_to_exit
+      q_to_exit if @notices.empty?
     end
 
     def all_passed_message
       bold("ALL EXAMPLES PASSED\n")
+    end
+
+    def empty_filter_notice
+      @notices << '**********FILTER EMPTY**********'
+      refresh_display
+      @notices.pop
     end
 
     def back_instructions
@@ -107,6 +113,11 @@ module SpecSelectorUtil
       close_alt_buffer
     end
 
+    def print_notices
+      return if @notices.empty?
+      @notices.each { |notice| @output.puts notice }
+    end
+
     def example_summary_instructions
       i_for_instructions
       @output.puts 'Press M to remove from filter' if @selected.metadata[:include]
@@ -114,7 +125,7 @@ module SpecSelectorUtil
       top_fail_text unless @failed.empty? || @selected == @failed.first
       back_instructions
       q_to_exit
-      empty_line
+      print_notices || empty_line
     end
   end
 end

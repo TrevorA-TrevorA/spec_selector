@@ -49,8 +49,6 @@ module SpecSelectorUtil
     end
 
     def rerun_all
-      return if @last_run_descriptions.empty?
-
       @inclusion_filter = []
       rerun
     end
