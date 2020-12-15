@@ -103,7 +103,7 @@ module SpecSelectorUtil
 
     def status_summary(notification)
       @summary = []
-      @summary << "Total Examples: #{notification.example_count}"
+      @summary << "Total Examples: #{@example_count}"
       @summary << "Finished in #{notification.duration} seconds"
       @summary << "Files loaded in #{notification.load_time} seconds"
     end

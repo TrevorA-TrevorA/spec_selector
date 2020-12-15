@@ -3,6 +3,7 @@
 require 'io/console'
 require 'json'
 require 'byebug'
+require 'pry'
 require_relative 'spec_selector/terminal'
 require_relative 'spec_selector/UI'
 require_relative 'spec_selector/format'
@@ -81,6 +82,7 @@ class SpecSelector
   end
 
   def dump_summary(notification)
+    @example_count = notification.example_count
     @outside_errors_count = notification.errors_outside_of_examples_count
     errors_before_formatter_initialization
     print_errors(notification) if @outside_errors_count.positive?

@@ -16,7 +16,7 @@ module SpecSelectorUtil
 
     def selector
       set_selected
-      display_list
+      @example_count > 1 ? display_list : display_example
       navigate
     end
 
