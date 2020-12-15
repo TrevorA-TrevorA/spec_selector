@@ -110,11 +110,11 @@ module SpecSelectorUtil
 
     def display_list
       clear_frame
+      display_filter_mode
       test_data_summary
       print_messages unless @messages.empty?
       all_passed_message if all_passing?
       basic_instructions
-      print_notices
       empty_line
       
       @list.each { |item| format_list_item(item) }
@@ -142,6 +142,7 @@ module SpecSelectorUtil
     def display_example
       @example_display = true
       clear_frame
+      display_filter_mode
       test_data_summary
       status = @selected.execution_result.status
       @list, data = example_list

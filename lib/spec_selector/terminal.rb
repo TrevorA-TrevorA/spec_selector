@@ -30,8 +30,16 @@ module SpecSelectorUtil
       system("tput rmcup")
     end
 
+    def reset_cursor
+      system("printf '\e[H'")
+    end
+
     def term_width
       $stdout.winsize[1]
+    end
+
+    def position_cursor(row, col)
+      system("printf '\e[#{row};#{col}H'")
     end
   end
 end

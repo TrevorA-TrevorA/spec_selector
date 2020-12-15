@@ -56,6 +56,7 @@ module SpecSelectorUtil
     def filter_remove
       @inclusion_filter -= [@selected]
       @selected.metadata[:include] = nil
+      @filter_mode = :descripton unless @inclusion_filter.any? { |item| one_liner?(item) }
     end
 
     def persist_descriptions
