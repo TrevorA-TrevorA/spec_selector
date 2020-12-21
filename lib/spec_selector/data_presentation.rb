@@ -30,11 +30,14 @@ module SpecSelectorUtil
     end
 
     def print_messages
+      printed = 0
       @messages.each do |message|
         next if message.include?('Run options: include {:full_description=>')
+        next if message.include?('Run options: include {:locations=>')
         italicize(message)
+        printed += 1
       end
-      empty_line
+      empty_line if printed.positive?
     end
 
     def examples_summary(notification)

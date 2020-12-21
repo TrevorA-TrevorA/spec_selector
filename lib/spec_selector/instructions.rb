@@ -25,7 +25,7 @@ module SpecSelectorUtil
 
     def display_filter_mode
       unless @inclusion_filter.empty?
-        notice = "Filter Mode: #{@filter_mode.to_s}"
+        notice = "FILTER MODE: #{@filter_mode.to_s.upcase}"
         col = term_width/2 - notice.length/2
         position_cursor(1, col)
         italicize notice
