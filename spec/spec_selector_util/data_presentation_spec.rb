@@ -124,7 +124,7 @@ describe SpecSelectorUtil::DataPresentation do
 
   describe '#print_summary' do
     before do
-      allow(notification).to receive(:example_count) { 30 }
+      spec_selector.ivar_set(:@example_count, 30)
       allow(notification).to receive(:duration) { 1.5 }
       allow(notification).to receive(:load_time) { 2.3 }
       spec_selector.status_summary(notification)
@@ -206,7 +206,10 @@ describe SpecSelectorUtil::DataPresentation do
   describe '#status_summary' do
     let(:summary) { spec_selector.ivar(:@summary) }
 
-    before { spec_selector.status_summary(notification) }
+    before do
+      spec_selector.ivar_set(:@example_count, 25)
+      spec_selector.status_summary(notification)
+    end
 
     it 'stores message indicating example total in @summary' do
       expect(summary).to include(/Total Examples: 25/)

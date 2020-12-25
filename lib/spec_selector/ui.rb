@@ -137,7 +137,11 @@ module SpecSelectorUtil
       when /q/i
         quit
       when /i/i
-        view_instructions_page unless @instructions
+        unless @instructions
+          view_instructions_page
+          return
+        end
+        
         exit_instruction_page_only
       when /r/i
         rerun

@@ -33,7 +33,7 @@ describe SpecSelectorUtil::UI do
 
   describe '#selector' do
     before do
-      spec_selector.ivar_set(:@active_map, mixed_map)
+      ivars_set({ :@active_map => mixed_map, :@example_count => 10 })
       allow_methods(:display_list, :navigate)
       spec_selector.selector
     end
@@ -141,7 +141,7 @@ describe SpecSelectorUtil::UI do
     before do
       ivars_set(:@active_map => mixed_map, :@list => [passing_example])
       ivars_set(:@selected => passing_example, :@example_display => true)
-      allow_methods(:selector)
+      allow_methods(:display_list)
       spec_selector.top_level_list
     end
 
@@ -149,16 +149,12 @@ describe SpecSelectorUtil::UI do
       expect(ivar(:@example_display)).to be false
     end
 
-    it 'sets @selected to nil' do
-      expect(ivar(:@selected)).to be_nil
-    end
-
     it 'sets @list to @active_map[:top_level]' do
       expect(ivar(:@list)).to eq(mixed_map[:top_level])
     end
 
-    it 'calls #selector' do
-      expect(spec_selector).to have_received(:selector)
+    it 'calls #display_list' do
+      expect(spec_selector).to have_received(:display_list)
     end
   end
 
@@ -175,7 +171,7 @@ describe SpecSelectorUtil::UI do
     context 'when @example_display is false' do
       it 'does not return immediately' do
         ivars_set(:@selected => fail_group, :@example_display => false)
-        allow_methods(:selector, :example?)
+        allow_methods(:display_list, :example?, :set_selected)
         spec_selector.select_item
         expect(spec_selector).to have_received(:example?)
       end
@@ -193,7 +189,7 @@ describe SpecSelectorUtil::UI do
     context 'when @selected is not an example' do
       before do
         ivars_set(:@active_map => mixed_map, :@selected => pass_group)
-        allow_methods(:selector)
+        allow_methods(:display_list)
         spec_selector.select_item
       end
 
@@ -201,12 +197,8 @@ describe SpecSelectorUtil::UI do
         expect(ivar(:@list)).to eq(pass_group.examples)
       end
 
-      it 'sets @selected to nil' do
-        expect(ivar(:@selected)).to be_nil
-      end
-
-      it 'calls #selector' do
-        expect(spec_selector).to have_received(:selector)
+      it 'calls #display_list' do
+        expect(spec_selector).to have_received(:display_list)
       end
     end
   end
@@ -238,13 +230,13 @@ describe SpecSelectorUtil::UI do
   end
 
   describe '#back' do
-    before { allow_methods(:parent_list, :selector) }
+    before { allow_methods(:parent_list, :display_list) }
 
     context 'when top level list is currently displayed' do
       it 'returns immediately' do
         spec_selector.back
         expect(spec_selector).not_to have_received(:parent_list)
-        expect(spec_selector).not_to have_received(:selector)
+        expect(spec_selector).not_to have_received(:display_list)
       end
     end
 
@@ -259,7 +251,7 @@ describe SpecSelectorUtil::UI do
       end
 
       it 'calls #selector' do
-        expect(spec_selector).to have_received(:selector)
+        expect(spec_selector).to have_received(:display_list)
       end
     end
   end
@@ -406,10 +398,21 @@ describe SpecSelectorUtil::UI do
     end
 
     context 'when input string matches /i/i' do
-      it 'calls #view_instructions_page' do
-        allow(spec_selector).to receive(:view_instructions_page)
-        spec_selector.option_keys('i')
-        expect(spec_selector).to have_received(:view_instructions_page)
+      context 'when instruction page is not open' do
+        it 'calls #view_instructions_page' do
+          allow(spec_selector).to receive(:view_instructions_page)
+          spec_selector.option_keys('i')
+          expect(spec_selector).to have_received(:view_instructions_page)
+        end
+      end
+
+      context 'when instruction page is already open' do
+        it 'calls #exit_instruction_page_only' do
+          spec_selector.ivar_set(:@instructions, true)
+          allow(spec_selector).to receive(:exit_instruction_page_only)
+          spec_selector.option_keys('i')
+          expect(spec_selector).to have_received(:exit_instruction_page_only)
+        end
       end
     end
   end
