@@ -1,11 +1,14 @@
 RSpec.shared_context 'shared' do
+  let(:spec_selector) { SpecSelector.new(StringIO.new) }
+  let(:output) { spec_selector.ivar(:@output).string }
   let(:fail_result) { build(:execution_result, status: :failed) }
   let(:pending_result) { build(:execution_result, status: :pending) }
   let(:failed_example) { build(:example, execution_result: fail_result) }
   let(:pending_example) { build(:example, execution_result: pending_result) }
   let(:passing_example) { build(:example) }
-  let(:pass_group) { build(:example_group) }
+  let(:pass_group) { build(:example_group, examples: [build(:example), build(:example)]) }
   let(:fail_group) { build(:example_group, examples: [failed_example, failed_example]) }
+  let(:mixed_result_group) { build(:example_group, examples: [passing_example, failed_example, pending_example]) }
   let(:fail_subgroup) do
     build(
       :example_group,

@@ -48,10 +48,6 @@ module SpecSelectorUtil
       @list == @active_map[:top_level]
     end
 
-    def empty_filter_view?
-      @empty_filter_view
-    end
-
     def filter_view?
       @list == @inclusion_filter
     end

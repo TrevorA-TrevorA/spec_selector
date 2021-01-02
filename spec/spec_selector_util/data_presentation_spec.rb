@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe SpecSelectorUtil::DataPresentation do
+describe 'SpecSelectorUtil::DataPresentation' do
   include_context 'shared'
 
   let(:spec_selector) { SpecSelector.new(StringIO.new) }
