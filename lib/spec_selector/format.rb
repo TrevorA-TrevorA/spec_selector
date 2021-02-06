@@ -95,12 +95,5 @@ module SpecSelectorUtil
       @output.puts '-' * term_width
       green('PASSED')
     end
-
-    def parent_description(data)
-      return '' unless data[:parent_example_group]
-
-      parent_data = data[:parent_example_group]
-      parent_description(parent_data) + parent_data[:description] + ': '
-    end
   end
 end

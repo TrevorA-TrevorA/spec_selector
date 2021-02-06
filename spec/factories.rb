@@ -30,7 +30,7 @@ module TestObjects
     attr_accessor :example
 
     def fully_formatted(_n)
-      'pending example'
+      "\npending example"
     end
   end
 
@@ -41,7 +41,7 @@ module TestObjects
     end
 
     def fully_formatted(_n)
-      'failed example'
+      "\nfailed example"
     end
   end
 end

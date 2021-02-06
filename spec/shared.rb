@@ -3,11 +3,12 @@ RSpec.shared_context 'shared' do
   let(:output) { spec_selector.ivar(:@output).string }
   let(:fail_result) { build(:execution_result, status: :failed) }
   let(:pending_result) { build(:execution_result, status: :pending) }
-  let(:failed_example) { build(:example, execution_result: fail_result) }
-  let(:pending_example) { build(:example, execution_result: pending_result) }
-  let(:passing_example) { build(:example) }
-  let(:pass_group) { build(:example_group, examples: [build(:example), build(:example)]) }
+  let(:failed_example) { build(:example, execution_result: fail_result, metadata: { description: 'failed_example' }) }
+  let(:pending_example) { build(:example, execution_result: pending_result, metadata: { description: 'pending_example' }) }
+  let(:passing_example) { build(:example, metadata: { description: 'passing_example' }, description: "passing_example") }
+  let(:pass_group) { build(:example_group, examples: [build(:example), build(:example)], metadata: { description: "pass_group" }) }
   let(:fail_group) { build(:example_group, examples: [failed_example, failed_example]) }
+  let(:pending_group) { build(:example_group, examples: [pending_example, pending_example], metadata: { description: 'pending_group' }) }
   let(:mixed_result_group) { build(:example_group, examples: [passing_example, failed_example, pending_example]) }
   let(:fail_subgroup) do
     build(
@@ -19,32 +20,52 @@ RSpec.shared_context 'shared' do
     )
   end
 
-  let(:fail_parent_group) { build(:example_group, examples: [], metadata: {}) }
+  let(:pending_subgroup) do
+    build(
+      :example_group,
+      metadata: {
+        parent_example_group: {}
+      },
+      examples: [pending_example, pending_example]
+    )
+  end
+
+  let(:fail_parent_group) { build(:example_group, examples: [], metadata: { description: 'fail_parent_group' }) }
+  let(:pending_parent_group) { build(:example_group, examples: [], metadata: { description: 'pending_parent_group' }) }
   let(:pass_subgroup) do
     build(
       :example_group,
-      metadata: { parent_example_group: pass_parent_group },
+      metadata: { parent_example_group: pass_parent_group.metadata, description: 'pass_subgroup' },
       examples: [passing_example, passing_example]
     )
   end
 
-  let(:pass_parent_group) { build(:example_group, examples: [], metadata: {}) }
+  let(:pass_parent_group) { build(:example_group, examples: [], metadata: { description: 'pass_parent_group' }) }
   let(:mixed_list) { [pass_group, fail_group] }
   let(:mixed_map) do
     {
-      top_level: [pass_group, fail_group],
+      :top_level => [pass_group, fail_group],
       pass_group.metadata[:block] => pass_group.examples,
-      fail_group.metadata[:block] => fail_group.examples
+      fail_group.metadata[:block] => fail_group.examples,
+    }
+  end
+
+  let(:pending_map) do
+    {
+      :top_level => [pending_group],
+      pending_group.metadata[:block] => pending_group.examples,
     }
   end
 
   let(:deep_map) do
     {
-      top_level: [pass_parent_group, fail_parent_group],
+      :top_level => [pending_parent_group, pass_parent_group, fail_parent_group],
+      pending_parent_group.metadata[:block] => [pending_subgroup],
       pass_parent_group.metadata[:block] => [pass_subgroup],
       fail_parent_group.metadata[:block] => [fail_subgroup],
+      pending_subgroup.metadata[:block] => pending_subgroup.examples,
       pass_subgroup.metadata[:block] => pass_subgroup.examples,
-      fail_subgroup.metadata[:block] => fail_subgroup.examples
+      fail_subgroup.metadata[:block] => fail_subgroup.examples,
     }
   end
 
