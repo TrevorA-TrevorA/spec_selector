@@ -57,6 +57,8 @@ module SpecSelectorUtil
     end
 
     def init_filter
+      inclusion_filter_path = "#{current_path}/inclusion_filter"
+      Dir.mkdir(inclusion_filter_path) unless Dir.exist?(inclusion_filter_path)
       @descriptions_file = "#{current_path}/inclusion_filter/descriptions.json"
       @locations_file = "#{current_path}/inclusion_filter/locations.json"
       @inclusion_filter = []
