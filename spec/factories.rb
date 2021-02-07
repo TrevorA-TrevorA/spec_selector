@@ -23,13 +23,14 @@ module TestObjects
                   :duration,
                   :load_time,
                   :errors_outside_of_example_count
+
     :examples
   end
 
   class SkippedExampleNotification < RSN::SkippedExampleNotification
     attr_accessor :example
 
-    def fully_formatted(_n)
+    def fully_formatted(_)
       "\npending example"
     end
   end
@@ -40,7 +41,7 @@ module TestObjects
     def initialize
     end
 
-    def fully_formatted(_n)
+    def fully_formatted(_)
       "\nfailed example"
     end
   end
@@ -61,7 +62,7 @@ FactoryBot.define do
     examples { [build(:example)] }
     metadata { { block: self } }
     description do
-      if self.examples.all? { |ex| ex.execution_result.status == :passed }
+      if examples.all? { |ex| ex.execution_result.status == :passed }
         'passing example group'
       else
         'non-passing example group'
@@ -77,12 +78,12 @@ FactoryBot.define do
   end
 
   factory :skipped_example_notification,
-    class: 'TestObjects::SkippedExampleNotification' do
+          class: 'TestObjects::SkippedExampleNotification' do
     example
   end
 
   factory :failed_example_notification,
-    class: 'TestObjects::FailedExampleNotification' do
-      example
-    end
+          class: 'TestObjects::FailedExampleNotification' do
+    example
+  end
 end

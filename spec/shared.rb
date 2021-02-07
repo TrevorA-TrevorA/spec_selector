@@ -4,11 +4,19 @@ RSpec.shared_context 'shared' do
   let(:fail_result) { build(:execution_result, status: :failed) }
   let(:pending_result) { build(:execution_result, status: :pending) }
   let(:failed_example) { build(:example, execution_result: fail_result, metadata: { description: 'failed_example' }) }
-  let(:pending_example) { build(:example, execution_result: pending_result, metadata: { description: 'pending_example' }) }
-  let(:passing_example) { build(:example, metadata: { description: 'passing_example' }, description: "passing_example") }
-  let(:pass_group) { build(:example_group, examples: [build(:example), build(:example)], metadata: { description: "pass_group" }) }
+  let(:pending_example) do
+    build(:example, execution_result: pending_result, metadata: { description: 'pending_example' })
+  end
+  let(:passing_example) do
+    build(:example, metadata: { description: 'passing_example' }, description: 'passing_example')
+  end
+  let(:pass_group) do
+    build(:example_group, examples: [build(:example), build(:example)], metadata: { description: 'pass_group' })
+  end
   let(:fail_group) { build(:example_group, examples: [failed_example, failed_example]) }
-  let(:pending_group) { build(:example_group, examples: [pending_example, pending_example], metadata: { description: 'pending_group' }) }
+  let(:pending_group) do
+    build(:example_group, examples: [pending_example, pending_example], metadata: { description: 'pending_group' })
+  end
   let(:mixed_result_group) { build(:example_group, examples: [passing_example, failed_example, pending_example]) }
   let(:fail_subgroup) do
     build(
@@ -46,14 +54,14 @@ RSpec.shared_context 'shared' do
     {
       :top_level => [pass_group, fail_group],
       pass_group.metadata[:block] => pass_group.examples,
-      fail_group.metadata[:block] => fail_group.examples,
+      fail_group.metadata[:block] => fail_group.examples
     }
   end
 
   let(:pending_map) do
     {
       :top_level => [pending_group],
-      pending_group.metadata[:block] => pending_group.examples,
+      pending_group.metadata[:block] => pending_group.examples
     }
   end
 
@@ -65,7 +73,7 @@ RSpec.shared_context 'shared' do
       fail_parent_group.metadata[:block] => [fail_subgroup],
       pending_subgroup.metadata[:block] => pending_subgroup.examples,
       pass_subgroup.metadata[:block] => pass_subgroup.examples,
-      fail_subgroup.metadata[:block] => fail_subgroup.examples,
+      fail_subgroup.metadata[:block] => fail_subgroup.examples
     }
   end
 

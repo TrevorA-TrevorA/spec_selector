@@ -40,7 +40,6 @@ describe SpecSelector do
       groups = spec_selector.ivar(:@groups)
       expect(groups.values).to include(group)
     end
-
   end
 
   describe '#example_passed' do

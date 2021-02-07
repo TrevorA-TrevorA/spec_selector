@@ -26,21 +26,21 @@ describe 'SpecSelectorUtil::DataMap' do
 
       it 'returns metadata of the example group to which the example belongs' do
         expect(spec_selector.parent_data(example_metadata))
-        .to eq(example_group.metadata)
+          .to eq(example_group.metadata)
       end
     end
 
     context 'when metadata hash is from an example group' do
       context 'when the example group has a parent group' do
         let(:example_group) do
-          instance_double('ExampleGroup',  metadata: {
-            parent_example_group: { block: :parent_example_block }
-          })
+          instance_double('ExampleGroup', metadata: {
+                            parent_example_group: { block: :parent_example_block }
+                          })
         end
 
         it 'returns the parent group metadata' do
           expect(spec_selector.parent_data(example_group.metadata))
-          .to eq(example_group.metadata[:parent_example_group])
+            .to eq(example_group.metadata[:parent_example_group])
         end
       end
 
@@ -54,16 +54,15 @@ describe 'SpecSelectorUtil::DataMap' do
 
   describe '#map_group' do
     let(:map) { spec_selector.ivar(:@map) }
+
     before { spec_selector.map_group(example_group) }
 
     context 'when example group has parent group' do
       let(:example_group) do
         instance_double('ExampleGroup', metadata: {
-          parent_example_group: { block: :parent_block }
-         })
+                          parent_example_group: { block: :parent_block }
+                        })
       end
-
-
 
       it 'stores the parent block as a key in @map initialized to an array' do
         expect(map[:parent_block]).to be_an(Array)

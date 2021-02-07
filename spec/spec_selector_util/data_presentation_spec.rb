@@ -86,7 +86,7 @@ describe 'SpecSelectorUtil::DataPresentation' do
 
   describe '#errors_summary' do
     it 'prints text indicating number of errors outside examples' do
-      allow(notification).to receive(:errors_outside_of_examples_count) { 3 }
+      allow(notification).to receive(:errors_outside_of_examples_count).and_return(3)
       allow(notification).to receive(:duration)
       allow(notification).to receive(:load_time)
       spec_selector.errors_summary(notification)
@@ -125,8 +125,8 @@ describe 'SpecSelectorUtil::DataPresentation' do
   describe '#print_summary' do
     before do
       spec_selector.ivar_set(:@example_count, 30)
-      allow(notification).to receive(:duration) { 1.5 }
-      allow(notification).to receive(:load_time) { 2.3 }
+      allow(notification).to receive(:duration).and_return(1.5)
+      allow(notification).to receive(:load_time).and_return(2.3)
       spec_selector.status_summary(notification)
       spec_selector.print_summary
     end
@@ -182,7 +182,9 @@ describe 'SpecSelectorUtil::DataPresentation' do
   describe '#toggle_passing' do
     before do
       allow_methods(:display_list, :navigate)
-      map, list, group = [mixed_map, mixed_list, pass_group]
+      map = mixed_map
+      list = mixed_list
+      group = pass_group
       ivars_set(:@map => map, :@list => list, :@selected => group)
     end
 

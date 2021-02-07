@@ -11,10 +11,10 @@ module SpecSelectorUtil
     # If an exception is raised before an instance of SpecSelector is
     # initialized (for instance, a TypeError raised due to a configuration
     # problem), the MessageNotification will be sent to the registered
-    # default formatter instead and will not be accessable to SpecSelector. 
-    # In such a case,the formatted error information is printed immediately 
-    # in the manner #determined by the default formatter. This method simply 
-    # checks for a condition caused by that situation and leaves the error 
+    # default formatter instead and will not be accessable to SpecSelector.
+    # In such a case, the formatted error information is printed immediately
+    # in the manner determined by the default formatter. This method simply
+    # checks for a condition caused by that situation and leaves the error
     # information displayed until the user exits.
     def errors_before_formatter_initialization
       if @outside_errors_count.positive? && @messages == ['No examples found.']
@@ -34,6 +34,7 @@ module SpecSelectorUtil
       @messages.each do |message|
         next if message.include?('Run options: include {:full_description=>')
         next if message.include?('Run options: include {:locations=>')
+
         italicize(message)
         printed += 1
       end
@@ -44,11 +45,11 @@ module SpecSelectorUtil
       @summary_notification = notification
       status_summary(notification)
 
-      if @inclusion_filter.empty? || @inclusion_filter.count > 10
-        @list = @map[:top_level]
-      else
-        @list = @inclusion_filter
-      end
+      @list = if @inclusion_filter.empty? || @inclusion_filter.count > 10
+                @map[:top_level]
+              else
+                @inclusion_filter
+              end
 
       selector
     end
@@ -90,9 +91,10 @@ module SpecSelectorUtil
 
     def toggle_passing
       return if all_passing?
-      
+
       @exclude_passing ? include_passing! : exclude_passing!
       return if @example_display && @list != @passed && !@instructions
+
       exit_instruction_page if @instructions
       p_data = parent_data(@selected.metadata)
       key = p_data ? p_data[:block] : :top_level
@@ -119,7 +121,7 @@ module SpecSelectorUtil
       all_passed_message if all_passing?
       basic_instructions
       empty_line
-      
+
       @list.each { |item| format_list_item(item) }
     end
 
@@ -128,11 +130,11 @@ module SpecSelectorUtil
         empty_filter_notice
         return
       end
-      
+
       @example_display = false
       exit_instruction_page if @instructions
       @list = @inclusion_filter
-      @selected = @list.first if !@selected.metadata[:include]
+      @selected = @list.first unless @selected.metadata[:include]
       set_selected
       display_list
     end
@@ -150,7 +152,7 @@ module SpecSelectorUtil
       status = @selected.execution_result.status
       @list, data = example_list
       example_summary_instructions
-      @output.puts "Added to filter √" if @selected.metadata[:include]
+      @output.puts 'Added to filter √' if @selected.metadata[:include]
       @selector_index = @list.index(@selected)
       view_other_examples(status) if @list.count > 1 && @instructions
       format_example(status, data)

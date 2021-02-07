@@ -23,11 +23,11 @@ module SpecSelectorUtil
     end
 
     def open_alt_buffer
-      system("tput smcup")
+      system('tput smcup')
     end
-    
+
     def close_alt_buffer
-      system("tput rmcup")
+      system('tput rmcup')
     end
 
     def reset_cursor

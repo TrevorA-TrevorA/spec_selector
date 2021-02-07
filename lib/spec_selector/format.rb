@@ -15,7 +15,7 @@ module SpecSelectorUtil
     ESCAPE_CODES.each do |sym, num|
       define_method(sym) do |text, included = false|
         formatted = "\e[#{num}m#{text}\e[0m"
-        formatted = included ? formatted + ' √' : formatted 
+        formatted = included ? formatted + ' √' : formatted
         @output.puts formatted
       end
     end

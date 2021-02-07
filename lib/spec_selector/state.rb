@@ -1,10 +1,10 @@
 module SpecSelectorUtil
-   module State
+  module State
     def rerun
       prepare_rerun
       descriptions, marker = appended_arguments
       rerun_script = current_path + '/scripts/rerun.sh'
-      prepend = [rerun_script, Process.pid, Dir.pwd].join(" ")
+      prepend = [rerun_script, Process.pid, Dir.pwd].join(' ')
       Signal.trap('TERM') { clear_frame; exit }
       system("#{prepend} #{$0} #{@rerun_arguments} #{descriptions} #{marker}")
     end
@@ -42,7 +42,7 @@ module SpecSelectorUtil
 
     def run_only_fails
       return if @failed.empty?
-      
+
       @inclusion_filter = []
       @failed.each { |example| filter_include(example) }
       rerun
@@ -63,7 +63,7 @@ module SpecSelectorUtil
       @filtered_descriptions = @inclusion_filter.map do |item|
         item.metadata[:full_description]
       end
-      
+
       filter = @filtered_descriptions.to_json
       File.write(@descriptions_file, filter)
     end
@@ -81,12 +81,13 @@ module SpecSelectorUtil
 
     def remove_old_locations
       return if @last_run_locations.empty?
+
       @last_run_locations.each { |loc| @rerun_arguments.slice!(loc) }
     end
 
     def remove_old_descriptions
       old_descriptions = @last_run_descriptions.map { |desc| "-e #{desc}" }
-      @rerun_arguments = ARGV.join(" ")
+      @rerun_arguments = ARGV.join(' ')
       old_descriptions.each { |desc| @rerun_arguments.slice!(desc) }
     end
 
@@ -97,7 +98,7 @@ module SpecSelectorUtil
     end
 
     def prepare_location_arguments
-      @rerun_arguments += " #{@filtered_locations.join(" ")}"
+      @rerun_arguments += " #{@filtered_locations.join(' ')}"
     end
 
     def prepare_description_arguments
@@ -106,12 +107,12 @@ module SpecSelectorUtil
       contains_singles = @filtered_descriptions.select { |desc| desc.include?("'") }
       included = @filtered_descriptions - contains_singles
       return contains_singles.to_s if included.empty?
-        
-      included = "#{included}".gsub("\"", "'")
+
+      included = included.to_s.gsub('"', "'")
       return included if contains_singles.empty?
-      
+
       contains_singles.map!(&:dump)
-      included[-1] = ", #{contains_singles.join(", ")}]"
+      included[-1] = ", #{contains_singles.join(', ')}]"
       included
     end
 
@@ -121,6 +122,7 @@ module SpecSelectorUtil
       @inclusion_filter.each { |item| item.metadata[:include] = nil }
       @inclusion_filter = []
       return if @instructions
+
       @example_display ? display_example : top_level_list
     end
 

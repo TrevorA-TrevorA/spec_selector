@@ -58,7 +58,7 @@ module SpecSelectorUtil
       return if @example_display
 
       if example?(@selected)
-        display_example 
+        display_example
         return
       end
 
@@ -112,7 +112,7 @@ module SpecSelectorUtil
 
     def tree_nav_keys(input)
       exit_instruction_page_only if @instructions && input != "\e"
-      
+
       case input
       when "\r"
         select_item
@@ -124,7 +124,6 @@ module SpecSelectorUtil
     end
 
     def option_keys(input)
-
       case input
       when /T/
         top_fail!
@@ -141,7 +140,7 @@ module SpecSelectorUtil
           view_instructions_page
           return
         end
-        
+
         exit_instruction_page_only
       when /r/i
         rerun
@@ -149,6 +148,7 @@ module SpecSelectorUtil
         rerun_all
       when /m/i
         return if @instructions
+
         @selected.metadata[:include] ? filter_remove : filter_include
         refresh_display
       when /^c$/i
@@ -161,6 +161,7 @@ module SpecSelectorUtil
     def user_input
       input = $stdin.getch
       return input unless IO.select([$stdin], nil, nil, 0.000001)
+
       input << $stdin.read_nonblock(2)
       input
     end

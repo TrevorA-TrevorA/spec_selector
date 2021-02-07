@@ -16,17 +16,17 @@ module SpecSelectorUtil
 
     def empty_filter_notice
       notice = '**********FILTER EMPTY**********'
-      row = term_width/2 - notice.length/2
+      row = term_width / 2 - notice.length / 2
       position_cursor(1, row)
       @output.puts notice
       reset_cursor
-      return
+      nil
     end
 
     def display_filter_mode
       unless @inclusion_filter.empty?
         notice = "FILTER MODE: #{@filter_mode.to_s.upcase}"
-        col = term_width/2 - notice.length/2
+        col = term_width / 2 - notice.length / 2
         position_cursor(1, col)
         italicize notice
         reset_cursor
@@ -62,7 +62,7 @@ module SpecSelectorUtil
     end
 
     def i_for_instructions
-      @output.puts "Press I to view full instructions"
+      @output.puts 'Press I to view full instructions'
     end
 
     def up_down_select_instructions
@@ -92,7 +92,7 @@ module SpecSelectorUtil
         filter_pass_instructions
         empty_line
       end
-      
+
       up_down_select_instructions
       back_instructions unless top_level?
       bold('Press R to rerun examples with filter selection')
