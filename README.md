@@ -26,21 +26,21 @@ The filter always uses description matching by default, but will use location (l
 
 **Installation**
 
-``
+````
 gem install spec_selector
-``
+````
 
 Once installed, add the following line to your .rspec file:
 
-``
+````
 --format SpecSelector
-``
+````
 
 Or, use the -f option on the command line
 
-``
+````
 rspec -f SpecSelector
-``
+````
 
 **Author**
 
