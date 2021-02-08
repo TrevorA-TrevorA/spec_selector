@@ -15,5 +15,6 @@ Gem::Specification.new do |spec|
   DESC
   spec.metadata = {
     'source_code_uri' => 'https://github.com/TrevorA-TrevorA/spec_selector'
+    'homepage_uri' => 'https://github.com/TrevorA-TrevorA/spec_selector'
   }
 end
