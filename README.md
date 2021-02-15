@@ -10,7 +10,7 @@ Upon finishing the test run, the test result tree appears as a formatted list of
 
 Using the selection tool, press M to add the selected group or example to the inclusion filter. Press R to rerun RSpec with only selected tests.
 
-Without using the selection tool, press F to rerun RSpec with only failed tests. Press SHIFT + T to rerun RSpec with only the top failed test.
+Without using the selection tool, press F to rerun only failed tests. Press SHIFT + T to rerun only the top failed test.
 
 Press C to clear the inclusion filter. Press A to clear the inclusion filter and rerun RSpec with all tests.
 
