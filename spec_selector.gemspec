@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
   printing static text). The utility allows you to select, view, 
   filter, and rerun specific test results with simple key controls.
   DESC
+  spec.required_ruby_version = '>= 2.0.0'
   spec.metadata = {
     'source_code_uri' => 'https://github.com/TrevorA-TrevorA/spec_selector',
     'homepage_uri' => 'https://github.com/TrevorA-TrevorA/spec_selector'
