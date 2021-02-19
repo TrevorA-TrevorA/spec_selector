@@ -1,6 +1,6 @@
 # spec_selector
 
-SpecSelector is an RSpec formatter than opens a utility menu in your terminal window when you run tests (rather than just printing static text). The utility allows you to select, view, filter, and rerun specific test results with simple key controls. 
+SpecSelector is an RSpec formatter that opens a utility menu in your terminal window when you run tests (rather than just printing static text). The utility allows you to select, view, filter, and rerun specific test results with simple key controls. 
 
 **view test results**
 
