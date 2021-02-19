@@ -41,8 +41,13 @@ Or, use the -f option on the command line
 ````
 rspec -f SpecSelector
 ````
+**License**
+
+MIT License
 
 **Author**
 
 Trevor Almon
+
+
  
