@@ -41,13 +41,11 @@ Or, use the -f option on the command line
 ````
 rspec -f SpecSelector
 ````
-**License**
+**License:** MIT License
+**Author:** Trevor Almon
+**rubygems url:** https://rubygems.org/gems/spec_selector
 
-MIT License
 
-**Author**
-
-Trevor Almon
 
 
  
