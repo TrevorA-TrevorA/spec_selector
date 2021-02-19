@@ -42,8 +42,7 @@ Or, use the -f option on the command line
 rspec -f SpecSelector
 ````
   
-<b/>
-<b/>
+
 
 **Author:** Trevor Almon\
 **License:** MIT License\
