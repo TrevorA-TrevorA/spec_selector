@@ -2,7 +2,7 @@ Gem::Specification.new do |spec|
   spec.name = 'spec_selector'
   spec.author = 'Trevor Almon'
   spec.files = Dir['{lib,spec}/**/*'] + %w[README.md license.md]
-  spec.version = '0.1.3'
+  spec.version = '0.1.4'
   spec.summary = 'A results viewer and filter utility for RSpec'
   spec.email = 'trevoralmon@gmail.com'
   spec.license = 'MIT'
