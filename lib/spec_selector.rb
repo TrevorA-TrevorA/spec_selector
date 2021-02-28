@@ -2,8 +2,7 @@
 
 require 'io/console'
 require 'json'
-require 'byebug'
-require 'pry'
+require 'rspec'
 require_relative 'spec_selector/terminal'
 require_relative 'spec_selector/UI'
 require_relative 'spec_selector/format'
