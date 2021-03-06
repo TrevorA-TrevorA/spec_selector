@@ -2,9 +2,13 @@
 
 SpecSelector is an RSpec formatter that opens a utility menu in your terminal window when you run tests (rather than just printing static text). The utility allows you to select, view, filter, and rerun specific test results with simple key controls. 
 
+<br>
+
 **View test results**
 
 Upon finishing the test run, the test result tree appears as a formatted list of top-level example groups. Select an example group to view its subgroups, select a subgroup to view its examples, and so on. You can view your test results with the selection tool, or just press T to immediately view the top failed test. 
+
+<br>
 
 **Filter and rerun test results**
 
@@ -16,6 +20,8 @@ Press C to clear the inclusion filter. Press A to clear the inclusion filter and
 
 Press V to view the inclusion filter as a selection list. 
 
+<br>
+
 _Filter Modes_
 
 Whenever the inclusion filter is not empty, the filter mode will display at the top center of the terminal window. 
@@ -24,6 +30,8 @@ There are two filter modes: _description_ and _location_.
 
 The filter always uses description matching by default, but will use location (line number) matching if examples without descriptions (i.e. "one-liners") are selected for inclusion.
 
+<br>
+
 **Usage notes**
 
 _Text color_
@@ -31,6 +39,8 @@ _Text color_
 An example description will appear in red text if the example failed, yellow text if the example is pending, or green text if the example passed.
 
 The color of an example group description is determined by the result status of its examples or recursively by the examples of its subgroups. The description will appear in red text if at least one failed example is present in its tree (e.g. if it contains a subgroup that contains a failed example), yellow text if its tree contains no failed examples and at least one pending example, or green text if every example in its tree passed.
+
+<br>
 
 _key controls_
 
@@ -53,7 +63,7 @@ Key control | Description
 | V | View the inclusion filter as a list. |
 | Q | Exit spec_selector. |
 
-
+<br>
 
 **Installation**
 
@@ -72,6 +82,9 @@ Or, use the -f option on the command line
 ````
 rspec -f SpecSelector
 ````
+
+<br>
+<br>
   
 
 
