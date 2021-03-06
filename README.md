@@ -34,35 +34,35 @@ The color of an example group description is determined by the result status of 
 
 _key controls_
 
-**BACKSPACE**: View the list that contains the parent of the current list or example result summary.
+BACKSPACE: View the list that contains the parent of the current list or example result summary.
 
-**ENTER/RETURN**: Select an example group or example from the result list.
+ENTER/RETURN: Select an example group or example from the result list.
 
-**ESCAPE**: Return to the top-level result list. If already viewing the top-level list, the escape key has no effect.
+ESCAPE: Return to the top-level result list. If already viewing the top-level list, the escape key has no effect.
 
-**UP/DOWN**: Navigate up and down the result list, or, if viewing an example result summary, view the next or previous example result summary.
+UP/DOWN: Navigate up and down the result list, or, if viewing an example result summary, view the next or previous example result summary.
 
-**A**: Clear the inclusion filter and rerun RSpec with all examples.
+A: Clear the inclusion filter and rerun RSpec with all examples.
 
-**C**: Clear the inclusion filter.
+C: Clear the inclusion filter.
 
-**F**: Rerun RSpec with only failed examples from the current result set.
+F: Rerun RSpec with only failed examples from the current result set.
 
-**I**: View or exit instructions.
+I: View or exit instructions.
 
-**M**: Include or remove an example or example group from the inclusion filter.
+M: Include or remove an example or example group from the inclusion filter.
 
-**P**: Hide or reveal passing examples in the current result set.
+P: Hide or reveal passing examples in the current result set.
 
-**R**: Rerun RSpec with only examples and example groups marked for inclusion.
+R: Rerun RSpec with only examples and example groups marked for inclusion.
 
-**T**: View the top failed example result summary from the current result set.
+T: View the top failed example result summary from the current result set.
 
-**SHIFT + T**: Rerun RSpec with only the top failed example from the current result set.
+SHIFT + T: Rerun RSpec with only the top failed example from the current result set.
 
-**V**: View the inclusion filter as a list.
+V: View the inclusion filter as a list.
 
-**Q**: Exit spec_selector.
+Q: Exit spec_selector.
 
 
 
