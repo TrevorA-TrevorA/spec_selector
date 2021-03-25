@@ -59,8 +59,8 @@ Key control | Description
 | M | Include or remove an example or example group from the inclusion filter. |
 | P | Hide or reveal passing examples in the current result set. |
 | R | Rerun RSpec with only examples and example groups marked for inclusion. |
-| T (uppercase)| Rerun RSpec with only the top failed example from the current result set. |
-| t (lowercase)| View the top failed example result summary from the current result set. |
+| T | Rerun RSpec with only the top failed example from the current result set. |
+| t | View the top failed example result summary from the current result set. |
 | V | View the inclusion filter as a list. |
 | Q | Exit spec_selector. |
 
