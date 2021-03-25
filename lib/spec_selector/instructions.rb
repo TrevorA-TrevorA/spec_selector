@@ -99,7 +99,7 @@ module SpecSelectorUtil
       empty_line
       bold('Press F to rerun only failed examples')
       empty_line
-      bold('Press SHIFT + T to rerun only the top failed example')
+      bold('Press T to rerun only the top failed example')
       empty_line
       bold('Press M to include or remove selected item from run filter')
       empty_line
@@ -118,7 +118,7 @@ module SpecSelectorUtil
     end
 
     def top_fail_text
-      bold 'Press T to view top failed example'
+      bold 'Press t to view top failed example'
     end
 
     def exit_instruction_page
