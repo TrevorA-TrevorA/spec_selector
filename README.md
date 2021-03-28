@@ -6,7 +6,7 @@ SpecSelector is an RSpec formatter that opens a utility menu in your terminal wi
 
 **View test results**
 
-Upon finishing the test run, the test result tree appears as a formatted list of top-level example groups. Select an example group to view its subgroups, select a subgroup to view its examples, and so on. You can view your test results with the selection tool, or just press T to immediately view the top failed test. 
+Upon finishing the test run, the test result tree appears as a formatted list of top-level example groups. Select an example group to view its subgroups, select a subgroup to view its examples, and so on. You can view your test results with the selection tool, or just press t to immediately view the top failed test. 
 
 <br>
 
@@ -14,7 +14,7 @@ Upon finishing the test run, the test result tree appears as a formatted list of
 
 Using the selection tool, press M to add the selected group or example to the inclusion filter. Press R to rerun RSpec with only selected tests.
 
-Without using the selection tool, press F to rerun only failed tests. Press SHIFT + T to rerun only the top failed test.
+Without using the selection tool, press F to rerun only failed tests. Press T to rerun only the top failed test.
 
 Press C to clear the inclusion filter. Press A to clear the inclusion filter and rerun RSpec with all tests.
 
