@@ -44,7 +44,7 @@ The color of an example group description is determined by the result status of 
 
 _key controls_
 
-Note: With the exception of T, letter key inputs are not case sensitive.
+Note: With the exception of T/t, letter key inputs are not case sensitive.
 
 Key control | Description
 ------------|--------------
