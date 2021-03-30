@@ -118,7 +118,7 @@ module SpecSelectorUtil
     end
 
     def top_fail_text
-      bold 'Press t to view top failed example'
+      bold 'Press [spacebar] to view top failed example'
     end
 
     def exit_instruction_page
