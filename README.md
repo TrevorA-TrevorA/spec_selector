@@ -44,13 +44,12 @@ The color of an example group description is determined by the result status of 
 
 _key controls_
 
-Note: With the exception of T/t, letter key inputs are not case sensitive.
-
 Key control | Description
 ------------|--------------
 | BACKSPACE | View the list that contains the parent of the current list or example result summary.|
 | ENTER/RETURN | Select an example group or example from the result list.|
 | ESCAPE | Return to the top-level result list. If already viewing the top-level list, the escape key has no effect.|
+| SPACEBAR | View the top failed example result summary from the current result set. |
 | UP/DOWN | Navigate up and down the result list, or, if viewing an example result summary, view the next or previous example result summary.|
 | A | Clear the inclusion filter and rerun RSpec with all examples.|
 | C | Clear the inclusion filter.|
@@ -60,7 +59,6 @@ Key control | Description
 | P | Hide or reveal passing examples in the current result set. |
 | R | Rerun RSpec with only examples and example groups marked for inclusion. |
 | T | Rerun RSpec with only the top failed example from the current result set. |
-| t | View the top failed example result summary from the current result set. |
 | V | View the inclusion filter as a list. |
 | Q | Exit spec_selector. |
 

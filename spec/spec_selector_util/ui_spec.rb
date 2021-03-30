@@ -376,28 +376,28 @@ describe 'SpecSelectorUtil::UI' do
       allow_methods(:top_fail, :toggle_passing, :quit)
     end
 
-    context 'when input string matches /t/i' do
+    context 'when input string matches /^ $/' do
       it 'calls #top_fail' do
-        spec_selector.option_keys('t')
+        spec_selector.option_keys(' ')
         expect(spec_selector).to have_received(:top_fail)
       end
     end
 
-    context 'when input string matches /p/i' do
+    context 'when input string matches /^p$/i' do
       it 'calls #toggle_passing' do
         spec_selector.option_keys('p')
         expect(spec_selector).to have_received(:toggle_passing)
       end
     end
 
-    context 'when input string matches /q/i' do
+    context 'when input string matches /^q$/i' do
       it 'calls #quit' do
         spec_selector.option_keys('q')
         expect(spec_selector).to have_received(:quit)
       end
     end
 
-    context 'when input string matches /i/i' do
+    context 'when input string matches /^i$/i' do
       context 'when instruction page is not open' do
         it 'calls #view_instructions_page' do
           allow(spec_selector).to receive(:view_instructions_page)

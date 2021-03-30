@@ -6,12 +6,12 @@ module SpecSelectorUtil
     DIRECTION_KEYS = ["\e[A", "\e[B"].freeze
     TREE_NAVIGATION_KEYS = ["\r", "\x7F", "\e"].freeze
     OPTION_KEYS = [
-      /t/i, /f/i, /p/i, /q/i, /i/i, /r/i, /m/i, /c/i, /a/i, /v/i
+      /^t$/i, /^f$/i, /^p$/i, /^q$/i, /^i$/i, /^r$/i, /^m$/i, /^c$/i, /^a$/i, /^v$/i, /^ $/
     ].freeze
 
     def exit_only
       q_to_exit
-      loop { quit if user_input.match?(/q/i) }
+      loop { quit if user_input.match?(/^q$/i) }
     end
 
     def selector
@@ -125,35 +125,35 @@ module SpecSelectorUtil
 
     def option_keys(input)
       case input
-      when /T/
+      when /^t$/i
         top_fail!
-      when /t/
+      when /^ $/
         top_fail
-      when /p/i
+      when /^p$/i
         toggle_passing
-      when /f/i
+      when /^f$/i
         run_only_fails
-      when /q/i
+      when /^q$/i
         quit
-      when /i/i
+      when /^i$/i
         unless @instructions
           view_instructions_page
           return
         end
 
         exit_instruction_page_only
-      when /r/i
+      when /^r$/i
         rerun
       when /^a$/i
         rerun_all
-      when /m/i
+      when /^m$/i
         return if @instructions
 
         @selected.metadata[:include] ? filter_remove : filter_include
         refresh_display
       when /^c$/i
         clear_filter
-      when /v/i
+      when /^v$/i
         view_inclusion_filter
       end
     end

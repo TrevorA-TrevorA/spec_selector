@@ -127,6 +127,7 @@ module SpecSelectorUtil
     end
 
     def top_fail!
+      return if @failed.empty?
       @inclusion_filter = []
       filter_include(@failed.first)
       rerun
