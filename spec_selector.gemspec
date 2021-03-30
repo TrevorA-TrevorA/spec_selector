@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rspec', '>= 3.0.0', '< 4'
   spec.metadata = {
     'source_code_uri' => 'https://github.com/TrevorA-TrevorA/spec_selector',
-    'homepage_uri' => 'https://github.com/TrevorA-TrevorA/spec_selector'
+    'homepage_uri' => 'https://github.com/TrevorA-TrevorA/spec_selector',
+    'changelog_uri' => 'https://github.com/TrevorA-TrevorA/spec_selector/blob/master/CHANGELOG.md'
   }
 end
