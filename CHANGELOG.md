@@ -7,3 +7,8 @@ Corrected a test rerun bug as well as a problem with key control regex patterns;
 <br>
 <br>
 Updated key control instructions display text.
+
+**version 0.1.8** 
+<br>
+<br>
+Removed unnecessary files from build.
