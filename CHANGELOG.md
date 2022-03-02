@@ -12,3 +12,8 @@ Updated key control instructions display text.
 <br>
 <br>
 Removed unnecessary files from build.
+
+**version 0.1.9** 
+<br>
+<br>
+Updated certificates
