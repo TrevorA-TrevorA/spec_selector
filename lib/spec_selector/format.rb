@@ -15,7 +15,7 @@ module SpecSelectorUtil
     ESCAPE_CODES.each do |sym, num|
       define_method(sym) do |text, included = false|
         formatted = "\e[#{num}m#{text}\e[0m"
-        formatted = included ? formatted + ' √' : formatted
+        formatted = included ? "#{formatted} √" : formatted
         @output.puts formatted
       end
     end
@@ -41,7 +41,7 @@ module SpecSelectorUtil
       included = item.metadata[:include]
 
       if @selected == item
-        highlight(description, included)
+        highlight(description, included: included)
       else
         green(description, included) if all_passed?(data)
         yellow(description, included) if any_pending?(data) && !any_failed?(data)
@@ -61,7 +61,7 @@ module SpecSelectorUtil
       red("FAIL: #{@fail_count}")
     end
 
-    def highlight(text, included = false)
+    def highlight(text, included: false)
       text += ' √' if included
       @output.puts "\e[1;7m#{text}\e[0m"
     end
@@ -70,7 +70,7 @@ module SpecSelectorUtil
       parent = parent_data(data)
       return data[:description] unless parent
 
-      lineage(parent) + ' -> ' + data[:description]
+      "#{lineage(parent)} -> #{data[:description]}"
     end
 
     def format_example(status, data)

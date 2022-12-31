@@ -20,21 +20,22 @@ module SpecSelectorUtil
       position_cursor(1, row)
       @output.puts notice
       reset_cursor
+
       nil
     end
 
     def display_filter_mode
-      unless @inclusion_filter.empty?
-        notice = "FILTER MODE: #{@filter_mode.to_s.upcase}"
-        col = term_width / 2 - notice.length / 2
-        position_cursor(1, col)
-        italicize notice
-        reset_cursor
-      end
+      return if @inclusion_filter.empty?
+
+      notice = "FILTER MODE: #{@filter_mode.to_s.upcase}"
+      col = term_width / 2 - notice.length / 2
+      position_cursor(1, col)
+      italicize notice
+      reset_cursor
     end
 
     def back_instructions
-      back_inst = 'Press [back] to view to parent group list'
+      back_inst = 'Press [backspace] to view to parent group list'
       escape_inst = 'Press [escape] to view to top-level group list'
 
       [back_inst, escape_inst].each do |inst|
@@ -66,10 +67,12 @@ module SpecSelectorUtil
     end
 
     def up_down_select_instructions
-      up_down_inst = 'Press ↑ or ↓ to navigate list' if @list.count > 1
+      up_down_inst = 'Press ↑ or ↓ to navigate list'
       select_inst = 'press [enter] to select'
+      instructions_text = [select_inst]
+      instructions_text.unshift(up_down_inst) if @list.count > 1
 
-      [up_down_inst, select_inst].each do |inst|
+      instructions_text.each do |inst|
         if @instructions
           bold(inst)
           empty_line
@@ -111,17 +114,33 @@ module SpecSelectorUtil
         empty_line
       end
 
+      bold('Press E to view stderr log')
+      empty_line
+      bold('Press O to view stdout log')
+      empty_line
       bold('Press I to exit instructions')
       empty_line
       bold('Press Q to quit')
       bind_input
     end
 
+    def toggle_instructions
+      unless @instructions
+        view_instructions_page
+        return
+      end
+
+      exit_instruction_page_only
+    end
+
     def top_fail_text
-      bold 'Press [spacebar] to view top failed example'
+      text = 'Press [spacebar] to view top failed example'
+      @instructions ? bold(text) : @output.puts(text)
     end
 
     def exit_instruction_page
+      return unless @instructions
+
       @instructions = false
       close_alt_buffer
     end

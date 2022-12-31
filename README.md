@@ -59,8 +59,10 @@ Key control | Description
 | P | Hide or reveal passing examples in the current result set. |
 | R | Rerun RSpec with only examples and example groups marked for inclusion. |
 | T | Rerun RSpec with only the top failed example from the current result set. |
+| E | View stderr log. |
+| O | View stdout log. |
 | V | View the inclusion filter as a list. |
-| Q | Exit spec_selector. |
+| Q | Exit. |
 
 <br>
 
@@ -69,6 +71,12 @@ Key control | Description
 ````
 gem install spec_selector
 ````
+
+If your project has a Gemfile:
+
+```
+gem 'spec_selector'
+```
 
 Once installed, add the following line to your .rspec file:
 

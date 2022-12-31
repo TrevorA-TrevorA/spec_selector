@@ -4,6 +4,16 @@ module SpecSelectorUtil
   # The Initialize module contains methods that initialize specific sets of
   # instance variables for the SpecSelector instance.
   module Initialize
+    STREAMS = %w[stderr stdout].freeze
+
+    STREAMS.each do |stream|
+      define_method("init_#{stream}_log") do
+        log = Tempfile.new(["#{stream}_log", '.txt'])
+        log.write("#{stream.upcase} LOG #{Time.now}:\n\n")
+        log
+      end
+    end
+
     def init_example_store
       @failed = []
       @passed = []
@@ -37,20 +47,20 @@ module SpecSelectorUtil
       @selector_index = 0
     end
 
-    def get_locations
+    def locations
       if File.exist?(@locations_file)
-        locations = File.open(@locations_file)
-        @last_run_locations = JSON.load(locations)
+        stored_locations = File.open(@locations_file)
+        @last_run_locations = JSON.parse(stored_locations.read)
         @filter_mode = :location
       else
         @last_run_locations = []
       end
     end
 
-    def get_descriptions
+    def descriptions
       if File.exist?(@descriptions_file)
         included = File.open(@descriptions_file)
-        @last_run_descriptions = JSON.load(included)
+        @last_run_descriptions = JSON.parse(included.read)
       else
         @last_run_descriptions = []
       end
@@ -63,8 +73,16 @@ module SpecSelectorUtil
       @locations_file = "#{current_path}/inclusion_filter/locations.json"
       @inclusion_filter = []
       @filter_mode = :description
-      get_descriptions
-      get_locations
+      descriptions
+      locations
+    end
+
+    def stderr_log
+      @stderr_log ||= init_stderr_log
+    end
+
+    def stdout_log
+      @stdout_log ||= init_stdout_log
     end
 
     def initialize_all

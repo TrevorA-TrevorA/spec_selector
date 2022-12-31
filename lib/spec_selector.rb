@@ -2,7 +2,7 @@
 
 require 'io/console'
 require 'json'
-require 'rspec'
+require 'tempfile'
 require_relative 'spec_selector/terminal'
 require_relative 'spec_selector/UI'
 require_relative 'spec_selector/format'
@@ -35,6 +35,8 @@ class SpecSelector
                                    :dump_summary
 
   def initialize(output)
+    $stderr = stderr_log
+    $stdout = stdout_log
     @output = output
     hide_cursor
     initialize_all
@@ -81,6 +83,7 @@ class SpecSelector
   end
 
   def dump_summary(notification)
+    $stdout = STDOUT
     @example_count = notification.example_count
     @outside_errors_count = notification.errors_outside_of_examples_count
     errors_before_formatter_initialization

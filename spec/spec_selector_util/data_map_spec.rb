@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe 'SpecSelectorUtil::DataMap' do
   subject(:spec_selector) { SpecSelector.new(StringIO.new) }
 

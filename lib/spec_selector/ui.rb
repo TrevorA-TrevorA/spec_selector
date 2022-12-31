@@ -6,7 +6,19 @@ module SpecSelectorUtil
     DIRECTION_KEYS = ["\e[A", "\e[B"].freeze
     TREE_NAVIGATION_KEYS = ["\r", "\x7F", "\e"].freeze
     OPTION_KEYS = [
-      /^t$/i, /^f$/i, /^p$/i, /^q$/i, /^i$/i, /^r$/i, /^m$/i, /^c$/i, /^a$/i, /^v$/i, /^ $/
+      /^t$/i,
+      /^f$/i,
+      /^p$/i,
+      /^q$/i,
+      /^i$/i,
+      /^r$/i,
+      /^m$/i,
+      /^c$/i,
+      /^a$/i,
+      /^v$/i,
+      /^ $/,
+      /^e$/i,
+      /^o$/i
     ].freeze
 
     def exit_only
@@ -23,6 +35,8 @@ module SpecSelectorUtil
     def set_selected
       @list ||= @active_map[:top_level]
       @selected ||= @list.first
+
+      nil
     end
 
     def navigate
@@ -42,6 +56,8 @@ module SpecSelectorUtil
       clear_frame
       delete_filter_data
       reveal_cursor
+      stderr_log.unlink
+      stdout_log.unlink
       exit
     end
 
@@ -123,7 +139,7 @@ module SpecSelectorUtil
       end
     end
 
-    def option_keys(input)
+    def option_keys(input) # rubocop:disable Metrics/CyclomaticComplexity
       case input
       when /^t$/i
         top_fail!
@@ -136,25 +152,21 @@ module SpecSelectorUtil
       when /^q$/i
         quit
       when /^i$/i
-        unless @instructions
-          view_instructions_page
-          return
-        end
-
-        exit_instruction_page_only
+        toggle_instructions
       when /^r$/i
         rerun
       when /^a$/i
         rerun_all
       when /^m$/i
-        return if @instructions
-
-        @selected.metadata[:include] ? filter_remove : filter_include
-        refresh_display
+        add_or_remove_from_filter
       when /^c$/i
         clear_filter
       when /^v$/i
         view_inclusion_filter
+      when /^e$/i
+        display_stderr_log
+      when /^o$/i
+        display_stdout_log
       end
     end
 

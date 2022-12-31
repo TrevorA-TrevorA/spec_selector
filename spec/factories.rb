@@ -6,8 +6,7 @@ module TestObjects
   class Example < RSpec::Core::Example
     attr_accessor :metadata, :execution_result, :description, :example_group
 
-    def initialize
-    end
+    def initialize; end # rubocop:disable Lint/MissingSuper
   end
 
   class ExecutionResult < RSpec::Core::Example::ExecutionResult
@@ -38,8 +37,7 @@ module TestObjects
   class FailedExampleNotification < RSN::FailedExampleNotification
     attr_accessor :example
 
-    def initialize
-    end
+    def initialize; end # rubocop:disable Lint/MissingSuper
 
     def fully_formatted(_)
       "\nfailed example"

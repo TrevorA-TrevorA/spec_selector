@@ -1,12 +1,20 @@
+# frozen_string_literal: true
+
 module SpecSelectorUtil
+  # The State module contains methods that facilitate example rerun and filtering
   module State
     def rerun
       prepare_rerun
       descriptions, marker = appended_arguments
-      rerun_script = current_path + '/scripts/rerun.sh'
-      prepend = [rerun_script, Process.pid, Dir.pwd].join(' ')
-      Signal.trap('TERM') { clear_frame; exit }
-      system("#{prepend} #{$0} #{@rerun_arguments} #{descriptions} #{marker}")
+      rerun_script = "#{current_path}/scripts/rerun.sh"
+      prepended = [rerun_script, Process.pid, Dir.pwd].join(' ')
+
+      Signal.trap('TERM') do
+        clear_frame
+        exit
+      end
+
+      system("#{prepended} #{$PROGRAM_NAME} #{@rerun_arguments} #{descriptions} #{marker}")
     end
 
     def filter_include(item = @selected)
@@ -59,6 +67,13 @@ module SpecSelectorUtil
       @filter_mode = :descripton unless @inclusion_filter.any? { |item| one_liner?(item) }
     end
 
+    def add_or_remove_from_filter
+      return if @instructions
+
+      @selected.metadata[:include] ? filter_remove : filter_include
+      refresh_display
+    end
+
     def persist_descriptions
       @filtered_descriptions = @inclusion_filter.map do |item|
         item.metadata[:full_description]
@@ -92,7 +107,7 @@ module SpecSelectorUtil
     end
 
     def persist_locations
-      @filtered_locations = @inclusion_filter.map { |item| item.location }
+      @filtered_locations = @inclusion_filter.map(&:location)
       locations = @filtered_locations.to_json
       File.write(@locations_file, locations)
     end
@@ -128,16 +143,17 @@ module SpecSelectorUtil
 
     def top_fail!
       return if @failed.empty?
+
       @inclusion_filter = []
       filter_include(@failed.first)
       rerun
     end
 
     def check_inclusion_status(item)
-      if @last_run_descriptions.include?(item.metadata[:full_description])
-        @inclusion_filter << item
-        item.metadata[:include] = true
-      end
+      return unless @last_run_descriptions.include?(item.metadata[:full_description])
+
+      @inclusion_filter << item
+      item.metadata[:include] = true
     end
   end
 end

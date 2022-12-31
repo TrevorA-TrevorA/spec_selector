@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_context 'shared' do
   let(:spec_selector) { SpecSelector.new(StringIO.new) }
   let(:output) { spec_selector.ivar(:@output).string }

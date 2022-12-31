@@ -35,13 +35,13 @@ RSpec.configure do |config|
     FactoryBot.find_definitions
   end
 
+  config.after(:all) { system("printf '\e[?25h'") }
+
   config.around(:example, break_loop: true) do |example|
-    begin
-      Timeout.timeout(0.001) do
-        example.run
-      end
-    rescue Timeout::Error
-      nil
+    Timeout.timeout(0.001) do
+      example.run
     end
+  rescue Timeout::Error
+    nil
   end
 end

@@ -5,8 +5,7 @@ module SpecSelectorUtil
   # function.
   module Terminal
     def clear_frame
-      system("printf '\e[H'")
-      system("printf '\e[3J'")
+      reset_cursor
       system("printf '\e[0J'")
     end
 
@@ -19,7 +18,7 @@ module SpecSelectorUtil
     end
 
     def term_height
-      $stdout.winsize[0]
+      STDOUT.winsize[0]
     end
 
     def open_alt_buffer
@@ -35,7 +34,7 @@ module SpecSelectorUtil
     end
 
     def term_width
-      $stdout.winsize[1]
+      STDOUT.winsize[1]
     end
 
     def position_cursor(row, col)

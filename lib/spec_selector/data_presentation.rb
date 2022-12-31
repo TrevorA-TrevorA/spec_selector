@@ -17,10 +17,10 @@ module SpecSelectorUtil
     # checks for a condition caused by that situation and leaves the error
     # information displayed until the user exits.
     def errors_before_formatter_initialization
-      if @outside_errors_count.positive? && @messages == ['No examples found.']
-        empty_line
-        exit_only
-      end
+      return unless @outside_errors_count.positive? && @messages == ['No examples found.']
+
+      empty_line
+      exit_only
     end
 
     def print_errors(notification)
@@ -95,7 +95,7 @@ module SpecSelectorUtil
       @exclude_passing ? include_passing! : exclude_passing!
       return if @example_display && @list != @passed && !@instructions
 
-      exit_instruction_page if @instructions
+      exit_instruction_page
       p_data = parent_data(@selected.metadata)
       key = p_data ? p_data[:block] : :top_level
       new_list = @active_map[key]
@@ -137,6 +137,14 @@ module SpecSelectorUtil
       @selected = @list.first unless @selected.metadata[:include]
       set_selected
       display_list
+    end
+
+    def display_stderr_log
+      system("less #{stderr_log.path}")
+    end
+
+    def display_stdout_log
+      system("less #{stdout_log.path}")
     end
 
     def refresh_display

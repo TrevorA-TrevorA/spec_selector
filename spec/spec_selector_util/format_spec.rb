@@ -136,7 +136,7 @@ describe 'SpecSelectorUtil::Format' do
 
     context 'when argument is included in filter' do
       it 'prints the argument with a check mark' do
-        spec_selector.highlight(passing_example.description, true)
+        spec_selector.highlight(passing_example.description, included: true)
         expect(output).to eq("\e[1;7mpassing_example √\e[0m\n")
       end
     end
