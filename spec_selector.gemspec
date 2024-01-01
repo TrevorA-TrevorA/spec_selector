@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   simple key controls.
   DESC
   spec.required_ruby_version = '>= 2.5'
-  spec.cert_chain = [File.expand_path('~/.ssh/spec_selector/gem-public_cert.pem')]
+  spec.cert_chain = [File.expand_path('gem-public_cert.pem')]
   spec.signing_key = File.expand_path('~/.ssh/spec_selector/gem-private_key.pem') if $PROGRAM_NAME =~ /gem\z/
   spec.metadata = {
     'source_code_uri' => 'https://github.com/TrevorA-TrevorA/spec_selector',
